@@ -1,0 +1,243 @@
+.panel-principal
+{
+	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+	/* border-radius: 18px; */
+	border: 20px solid #0D98BA;
+}
+.panel-titre
+{
+	padding: 20px;
+	background: #0D98BA !important;
+	color: white !important;
+	font-family: fantasy;
+	border-radius: 0px
+}
+
+.panel-champ
+{
+	background: #37ADFF !important;
+	color: white !important;
+	text-transform: uppercase;
+}
+h4
+{
+	font-weight: bolder;
+}
+.my-button
+{
+	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.all-panel
+{
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.all-panel:hover
+{
+	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.my-navbar
+{
+	background-color: rgb(16, 100, 121);
+	border: none;
+	margin-bottom: 0px;
+	border-radius: 0px;
+}
+
+.top-img
+{
+	text-align: center;
+	max-height: 200px;
+	min-width: 200px;
+	border-radius: 50%;
+}
+.top
+{
+	text-align: center;
+	border-radius: 15px;
+}
+.navbar-nav > li > a
+{
+	color: white !important;
+	text-decoration: none;
+}
+
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus
+{
+	background-color: rgb(4, 36, 83) !important;
+}
+
+
+.container{ border: 3px solid; }
+
+.bordureRouge{ border: 1px solid red; padding: 10px;}
+.bordureVerte{ border: 3px solid green; padding: 10px; }
+.bordurejaune{ border: 3px solid yellow; padding: 10px; }
+
+.section-1
+{ 
+	min-height: 800px !important;
+	min-width: 30px;
+	background-color: rgb(255, 255, 255);
+	box-shadow: 0px 0px 38px rgba(0,0,0,0.30), 0 0px 12px rgba(0,0,0,0.22);
+}
+
+.section-2
+{ 
+	min-height: 700px !important;
+}
+
+.profil
+{
+	background-color: rgb(240, 238, 238);
+	color: rgb(16, 100, 121);
+	text-align: center;
+}
+
+.nom-admin
+{
+	margin-top: 10px;
+	font-size: 19px;
+	opacity: 0.6;
+}
+
+.accueil
+{
+	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-weight: 900;
+	margin-left: 110px !important;
+	font-size: 25px;
+	color: white !important;
+	border-radius: 5px;
+}
+
+.accueil-titre
+{
+	text-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-weight: 900;
+	font-size: 32px;
+	color: rgb(242, 122, 33) !important;
+}
+
+.footer
+{
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-size: 15px;
+	opacity: 0.8;
+}
+
+.col-footer
+{
+	margin-top: 472px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+
+.general
+{
+	font-size: 17px;
+	font-weight: bold;
+	margin-top: 30px;
+	margin-bottom: 5px;
+	color: rgb(16, 100, 121);
+	text-align: center;
+	opacity: 0.6;
+
+}
+
+.menu
+{
+	background-color: rgb(243, 243, 243);
+}
+
+.menuR
+{
+	color:rgb(16, 100, 121);
+	border-bottom: 0px;
+}
+
+.bordureMenu-active
+{ 
+	border: 1px solid rgb(199, 198, 198) ; 
+	padding: 10px;
+	text-align: center;
+	margin-bottom: 3px;
+	background-color: rgb(16, 100, 121);
+	color: white;
+	text-decoration: none;
+}
+.bordureMenu
+{ 
+	padding: 10px;
+	text-align: center;
+	margin-bottom: 3px;
+	background-color: white;
+	color: rgb(16, 100, 121);
+	text-decoration: none;
+}
+
+.bordureTitrePage
+{ 
+	border: 1px ; 
+	padding: 10px;
+	background-color: rgb(255, 255, 255);
+}
+
+.roundedImage
+{
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+    overflow:hidden;
+    -webkit-border-radius:50px;
+    -moz-border-radius:50px;
+    border-radius:50px;
+    width:90px;
+	height:90px;
+}
+
+.title-page
+{
+	opacity: 0.8;
+	color: rgb(16, 100, 121);
+	font-size: 23px;
+	text-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+}
+
+.btn-decon
+{
+	background-color: white !important;
+	color: rgb(175, 10, 10);
+}
+
+.btn-decon:hover
+{
+	color: black;
+}
+
+.col-button
+{
+	margin-top: 50px;
+}
+.btn-primary
+{
+	background-color: rgb(16, 128, 156);
+}
+
+.sunu-tableau
+{
+	/* background-color: #0D98BA; */
+	margin-top: 20px;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	background-color: rgb(255, 254, 254);
+}
+
+.header-modal
+{
+	background-color: rgb(16, 100, 121);
+	color:#f4934e;
+}
