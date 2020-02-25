@@ -1,0 +1,77 @@
+<html>
+  
+  <head>
+    <link rel="stylesheet" type="text/css" media="screen" href="css.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="all.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.bundle.min.css">
+    <meta charset="utf-8"/>
+    <meta http-equiv="x-UA-Compatible" content="IE=edge"/>
+    <title>{% block title %} {% endblock%}</title>
+    {% block include_css %} {% endblock%}
+    <meta name="viewport" content="width-device-width, initial-scale-1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" >
+
+    
+    </head>
+      <body>
+        
+            <div class="container mt-5">
+              <div class="row  ">
+    <div class=" card col-sm-9 col-md-7 col-lg-5 mx-auto  bg-info mt-5 my-1"  >
+                  <div class=" card-signin  bg-info">
+                    <div class="card-body">
+                      <h5 class="card-title text-center h1">Gestion des logements universitaire</h5>
+                      <form class="form-signin">
+                        <div class="form-label-group">
+                          <label class="h4">
+                            Cest une platforme qui permet la gestion compléte des logements universitaire de la 
+                            reservation jusqu'à la jusqu' a fin du contrat. 
+                            Cest une platforme qui permet la gestion compléte des logements universitaire de la 
+                            reservation jusqu'à la jusqu' a fin du contrat.
+                            
+                          </label>
+                        </div>
+                       
+                        
+                      </form>
+                    </div>
+                  </div>
+                </div>-->
+                <div class="card card-signin col-sm-9 col-md-7 col-lg-5 mx-auto mt-5">
+                  <div class=" ">
+                    <div class="card-body">
+                      <h5 class="card-title text-center h1 mb-5">Connexion</h5>
+                      <form method="POST" action="{{ url_for('login') }}" >
+                        <div class="form-label-group mb-3">
+                          <label for="inputEmail">identifiant</label>
+                          <input name="identifiant" type="text" id="inputEmail" class="form-control" placeholder="identifiant" required autofocus>
+                          
+                        </div>
+          
+                        <div class="form-label-group mb-3">
+                          <label for="inputPassword">Mot de passe</label>
+                          <input name="mdp" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                          
+                        </div>
+          
+                        <div class="custom-control custom-checkbox mb-3">
+                          <input type="checkbox" class="custom-control-input" id="customCheck1">
+                          <label class="custom-control-label" for="customCheck1">Remember password</label>
+                        </div>
+                        <button class="btn btn-lg btn-info btn-block text-uppercase mb-3" type="submit">Sign in</button>
+                        
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+       
+         </form>
+         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" ></script>
+        </body >
+         </html>
+        

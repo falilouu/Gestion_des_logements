@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+	<title>{% block titre %} Page administrateur {% endblock %}</title>
+</head>
+
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<nav class="navbar navbar-default my-navbar">
+				<div class="container-fluid">
+
+					<div class="navbar-header">
+						<a class="navbar-brand accueil-titre" href="#">Gestion des logements du campus</a>
+						<a class="navbar-brand accueil" href="#">{% block titre_site %} Espace administrateur {% endblock %}</a>
+					</div>
+				
+						
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#" style="font-weight : 600"><form action="{{ url_for("logout") }}"><button type="submit" class="btn btn-primary btn-decon">Déconnexion</button></form></a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>		
+	
+	<div class="row">
+		<section class="col-md-12">
+			<div class="col-md-2 section-1">
+				<div class="row">
+					<div class="col-md-12 profil">
+						<div class="roundedImage">
+							<img src="{{url_for("static", filename="images/icon.png")}}">
+						</div>
+						<p class="nom-admin">Falilou - Admin</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 general">
+						<p class="">Gestion des utilisateurs</p>
+					</div>
+				</div>
+				<div class="row menuR">
+					<div class="col-md-12 menu">
+						<a href=""><div class="row bordureMenu-active" style="font-weight: bold;">Gestionnaires</div></a>
+					</div>
+				</div>
+				<div class="row menuR">
+					<div class="col-md-12 menu">
+						<a href=""><div class="row bordureMenu" style="font-weight: bold;">Etudiants</div></a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-10 section-2"> 
+				<div class="row">
+					<div class="col-md-12 title-page">
+						<h2>Gestion des utilisateurs</h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-1 col-md-offset-11 col-button">
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjouter">Ajouter</button>
+					</div>
+				</div>
+				<div class="row">
+					{% block contenu_page %}  {% endblock %}	  
+				</div>
+			</div>
+		</section> 
+	 </div>
+
+	 <!-- footer -->
+     <footer style="background-color: rgb(16, 100, 121); color: white;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 text-center" style="margin-top: 10px; margin-bottom: 10px;">
+					Copyright 2020 Front-End Team. All rights reserved
+				</div>
+            </div>  
+        </div>
+     </footer>
+	 <!-- end of footer -->
+	 
+	 
+	 <script src="../static/js/jquery.min.js"></script>
+	 <script src="../static/js/bootstrap.min.js"></script>
+	 <script rel="stylesheet" src="{{ url_for("static", filename="js/fiche.js") }}"></script>
+
+</body>
+
+</html>

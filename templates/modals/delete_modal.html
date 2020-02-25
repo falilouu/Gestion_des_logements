@@ -1,0 +1,22 @@
+<!-- Modal supprimer utilisateur-->
+
+<div class="modal fade" id="modalSupprimer{{ user["id"] }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header header-modal">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Supprimer utilisateur</h4>
+        </div>
+        <div class="modal-body">
+            Voulez-vous vraiment supprimer cet utilisateur?
+        </div>
+        <div class="modal-footer">
+            <form action="{{ url_for('delete', user_id = user["id"]) }}" method="POST">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                <input class="btn btn-danger" type="submit" value="Supprimer">
+            </form>
+        
+        </div>
+    </div>
+    </div>
+</div>

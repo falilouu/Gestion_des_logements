@@ -1,0 +1,52 @@
+{% extends "layouts/squelette.html" %}
+
+{% block contenu_page %}
+
+<div class="col-md-12">
+	<table class="table table-bordered sunu-tableau">
+		<thead class="thead-light">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Nom</th>
+			<th scope="col">Prenom</th>
+			<th scope="col">Login</th>
+			<th scope="col">Fonction</th>
+			<th scope="col">Pavillon</th>
+			<th scope="col">Action</th>
+		</tr>
+		</thead>
+		<tbody>
+
+		{% for user in users %}
+		<tr>
+			<th scope="row">{{ user["id"] }}</th>
+			<td>{{ user["nom"] }}</td>
+			<td>{{ user["prenom"] }}</td>
+			<td>{{ user["username"] }}</td>
+			<td>{{ user["fonction"] }}</td>
+			<td>{{ user["Pavillon_nom_pavillon"] }}</td>
+			<td class="col-md-3">
+				<div class="row">
+					<div class="col-md-4 col-md-offset-2">
+						<button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalModifier">Modifier</button>
+					</div>
+					<div class="col-md-4">
+						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimer">Supprimer</button>
+					</div>
+				</div>
+			</td>
+		</tr>
+
+		{% include "modals/delete_modal.html" %}
+		{% include "modals/update_modal.html" %}
+
+		{% endfor %}
+
+		</tbody>
+	</table>
+	
+	{% include "modals/add_modal.html" %}
+	
+</div>
+
+{% endblock %}

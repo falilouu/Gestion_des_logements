@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block title %} Connexion {% endblock %}
+{% block include_css %} 
+    <link rel="stylesheet" type="text/css" media="screen" href="css.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="all.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.bundle.min.css">
+{% endblock%}
+{% block body %} 
+
+    <form method="POST" action="{{ url_for('registerGestionnaire') }}">
+        
+            <div class="container">
+              <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                  <div class="card card-signin my-5">
+                    <div class="card-body">
+                      <h5 class="card-title text-center">Register</h5>
+                      <form class="form-signin">
+                        <div class="form-label-group">
+                            <input name="prenom" type="text" id="prenom" class="form-control" placeholder="Prenom" required autofocus>
+                            <label for="prenom">Prenom</label>
+                        </div>
+                        <div class="form-label-group">
+                            <input name="nom" type="text" id="nom" class="form-control" placeholder="Nom" required autofocus>
+                            <label for="nom">Nom</label>
+                        </div>
+                        <div class="form-label-group">
+                          <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Identifiant" required autofocus>
+                          <label for="inputEmail">Identifiant </label>
+                        </div>
+          
+                        <div class="form-label-group">
+                          <input name="mdp" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+                          <label for="inputPassword">Mot de passe</label>
+                        </div>
+                        <div class="form-label-group">
+                            <select name="fonction" placeholder="Fonctions" required autofocus class="form-control">
+                                <option value="Chef de pavillon">Chef de pavillon</option>
+                                <option value="Caissier">Caissier</option>
+                            </select>
+                            <label for="inputEmail">Fonction </label>
+                        </div>
+                        <div class="form-label-group" placeholder="Etat" required autofocus class="form-control">
+                          <select name="etat" placeholder="Fonctions" required autofocus class="form-control">
+                              <option value="Activé">Activé</option>
+                              <option value="Desactiver">Desactivé</option>
+                          </select>
+                          <label for="inputEmail">Etat </label>
+                        </div>
+                        
+                        <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Enregistrer</button>
+                        
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+       
+          
+    </form>
+
+{% endblock %}
+{% block include_js %}
+<script src="jquery.js" ></script>
+{% endblock%}
