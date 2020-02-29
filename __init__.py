@@ -115,6 +115,7 @@ def addrec():
 # Suppression
 @app.route('/user/<string:user_id>/delete', methods = ['POST'])
 def delete(user_id):
+    i = 1
     cur = mysql.connection.cursor()
     cur.execute("""
     UPDATE gestionnaire
@@ -139,13 +140,14 @@ def update(user_id):
         fonction = request.form['fonction']
 
         pavillon = request.form['pavillon']
+        numero = request.form['numero']
 
         cur = mysql.connection.cursor()
         cur.execute("""
         UPDATE gestionnaire
-        SET nom = %s, prenom = %s, fonction = %s, pavillon_nom_pavillon = %s
+        SET nom = %s, prenom = %s, fonction = %s, pavillon_nom_pavillon = %s, numero = %s
         WHERE id = %s
-        """, (nom,prenom,fonction,pavillon, user_id))
+        """, (nom,prenom,fonction,pavillon,numero, user_id,))
         flash('Data Updtated Successfully')
         mysql.connection.commit()
         #cur.close()

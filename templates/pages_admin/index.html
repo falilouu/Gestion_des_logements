@@ -49,4 +49,28 @@
 	
 </div>
 
+
+<script>
+
+	function validateForm() 
+	{
+		var x = document.forms["add_form"]["username"].value;
+		var y = document.forms["add_form"]["email"].value;
+		
+		'{% for user in users %}'
+			if (x == "{{ user['username']}}") 
+			{
+				alert("Ce username existe deja !");
+				return false;
+			}
+			else if (y == "{{ user['email']}}") 
+			{
+				alert("Ce mail existe deja !");
+				return false;
+			}
+		'{% endfor %}'
+} 
+	
+</script>
+
 {% endblock %}

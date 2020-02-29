@@ -1,6 +1,6 @@
 <!-- Modal Ajouter utilisateur -->
 
-<form action="{{ url_for('addrec') }}" method="POST">
+<form name="add_form" action="{{ url_for('addrec') }}" onsubmit="return validateForm()" method="POST">
     <div class="modal fade" id="modalAjouter" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
         <div class="modal-content">
