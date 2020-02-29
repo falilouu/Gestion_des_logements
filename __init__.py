@@ -52,52 +52,64 @@ mysql = MySQL(app)
 # Page d'admin des gestionnaires
 @app.route('/page_admin/gestionnaire')
 def lister_gestionnaires():
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT id, prenom, nom, email, username, fonction, Pavillon_nom_pavillon, numero FROM gestionnaire where etat='activer'")
-	rows = cur.fetchall()
-	cur.close()
-	return render_template('pages_admin/index.html', users = rows)
+    if 'identifiant' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, prenom, nom, email, username, fonction, Pavillon_nom_pavillon, numero FROM gestionnaire where etat='activer'")
+        rows = cur.fetchall()
+        cur.close()
+        return render_template('pages_admin/index.html', users = rows)
+    else:
+        return redirect(url_for("login"))
 
 
 # Page d'admin des etudiants
 @app.route('/page_admin/etudiant')
 def gestion_etudiant():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
-    rows = cur.fetchall()
-    cur.close()
-    return render_template('pages_admin/gestion_etudiants.html', users = rows)
+    if 'identifiant' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
+        rows = cur.fetchall()
+        cur.close()
+        return render_template('pages_admin/gestion_etudiants.html', users = rows)
+    else:
+        return redirect(url_for("login"))
 
 
 
 # Page des gestionnaires
 @app.route('/page_gestionnaire')
 def index_gestonnaire():
-    return render_template("pages_gestionnaire/index.html")
+    if 'identifiant' in session:
+        return render_template("pages_gestionnaire/index.html")
+    else:
+        return redirect(url_for("login"))
 
 
 # Ajout d'utilisateur
 @app.route('/addrec', methods = ['POST', 'GET'])
 def addrec():
-    if request.method == 'POST':
+    if 'identifiant' in session:
+        if request.method == 'POST':
 
-        numero = request.form['numero']
-        nom = request.form['nom']
- 
-        prenom = request.form['prenom']
+            numero = request.form['numero']
+            nom = request.form['nom']
+    
+            prenom = request.form['prenom']
 
-        mdp = request.form['password'].encode("utf-8")
+            mdp = request.form['password'].encode("utf-8")
 
-        fonction = request.form['fonction']
-        username = request.form['username']
-        pavillon = request.form['pavillon']
-        email = request.form['email']
+            fonction = request.form['fonction']
+            username = request.form['username']
+            pavillon = request.form['pavillon']
+            email = request.form['email']
 
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO gestionnaire(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
-        mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('lister_gestionnaires'))
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO gestionnaire(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('lister_gestionnaires'))
+    else:
+        return redirect(url_for("login"))
 
 
 # Suppression
@@ -142,11 +154,6 @@ def update(user_id):
 
 
 # Login Manager
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    return render_template('login/home.html')
-
-
 @login_manager.user_loader
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -170,46 +177,16 @@ def login():
         
         if user != None:
             if p == user["mdp"]:
-                session['identifiant']=user["username"]
-                session['prenom']=user["prenom"]
+                session['identifiant'] = user["username"]
+                session['prenom'] = user["prenom"]
                 return redirect(url_for('lister_gestionnaires'))
             else:
-                 return render_template('login/mot_passe_incorrecte.html')
+                 return redirect(url_for('login'))
         else:
-            return render_template('login/mot_passe_incorrecte.html')
+            return redirect(url_for('login'))
 
 
-            
-@app.route('/register', methods=['GET', 'POST'])
-def registerAdmin():
-    if request.method == "GET":
-        return render_template("login/register.html")
-    else:
-        details = request.form
-        identifiant = details['email']
-        mdp = details['mdp'].encode("utf-8")
-        prenom = details['prenom']
-        nom = details['nom']
-        username = details['username']
-        salt=bcrypt.gensalt()
-
-        pw_hash =hashlib.sha256(mdp).hexdigest()
-
-        #hash_password=bcrypt.hashpw(mdp,bcrypt.gensalt())
-
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO administrateur(prenom,nom,login,mdp,username) VALUES (%s,%s, %s,%s,%s)", (prenom,nom,identifiant,pw_hash,username))
-        mysql.connection.commit()
-        session['prenom'] = prenom
-        session['nom'] = nom
-        session['identifiant'] = identifiant
-        
-        cur.close()
-        return redirect(url_for('home'))
-    return render_template('login/login.html')
-
-
-
+# Deconnexion compte
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
