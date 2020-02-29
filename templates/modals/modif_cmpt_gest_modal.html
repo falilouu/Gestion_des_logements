@@ -1,0 +1,52 @@
+<!-- Modal Ajouter utilisateur -->
+<script rel="stylesheet" src="{{ url_for("static", filename="js/fiche1.js") }}"></script> 
+<form action="" method="POST">
+    <div class="modal fade" id="modalModif" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header header-modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modification compte</h4>
+                </div>
+
+                <div class="modal-body">                       
+                    <div class="row " style="padding-left: 15%;">
+                        <div class="col-lg-10 " >    
+                            <div class="form-example" >
+                
+                                <label class="control-label" for="login">Login: </label><br>
+                
+                                <input type="text" name="login" id="login1"  class="form-control"  maxlength="8" required >
+                            </div>
+                        </div>
+                    </div><br>
+            
+                    <div class="row" style="padding-left: 15%;">
+        
+                        <div class="col-lg-5 " >
+        
+                            <label class="control-label" for="passe">Nouveau mot de passe: </label>
+        
+                            <input  type="password" name="Passe" id="Passe11"   class="form-control" required maxlength="8" minlength="8" >
+                        </div>
+        
+                        <div class="col-lg-5 " >
+        
+                            <label class="control-label" for="passe">Confirmer mot de passe: </label>
+        
+                            <input  type="password" name="Passe" id="Passe22"   class="form-control" required maxlength="8" minlength="8" >
+                        </div>
+
+                    </div><br>                   
+                    <div class="modal-footer" >
+                        <span id="msg"></span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success" onclick="validate()">Modifie</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</form>

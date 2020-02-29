@@ -4,20 +4,22 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.css") }}">
-	<link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+	{% block css %}
+		<link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+		<link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+	{% endblock %}
 	<title>{% block titre %} Page administrateur {% endblock %}</title>
 </head>
 
 <body>
-
+	{% block nav_bar %}
 	<div class="container-fluid">
 		<div class="row">
 			<nav class="navbar navbar-default my-navbar">
 				<div class="container-fluid">
 
 					<div class="navbar-header">
-						<a class="navbar-brand accueil-titre" href="#">Gestion des logements du campus</a>
+						<a class="navbar-brand accueil-titre" href="#">{% block titre_gauche %}Gestion des logements du campus {% endblock %}</a>
 						<a class="navbar-brand accueil" href="#">{% block titre_site %} Espace administrateur {% endblock %}</a>
 					</div>
 				
@@ -29,7 +31,9 @@
 			</nav>
 		</div>
 	</div>		
+	{% endblock %}
 	
+	{% block corps %}
 	<div class="row">
 		<section class="col-md-12">
 			<div class="col-md-2 section-1">
@@ -41,6 +45,7 @@
 						<p class="nom-admin">Falilou - Admin</p>
 					</div>
 				</div>
+				{% block menu %}
 				<div class="row">
 					<div class="col-md-12 general">
 						<p class="">Gestion des utilisateurs</p>
@@ -48,24 +53,28 @@
 				</div>
 				<div class="row menuR">
 					<div class="col-md-12 menu">
-						<a href=""><div class="row bordureMenu-active" style="font-weight: bold;">Gestionnaires</div></a>
+						<a href="{{ url_for("gestion_etudiant") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Gestionnaires</div></a>
 					</div>
 				</div>
 				<div class="row menuR">
 					<div class="col-md-12 menu">
-						<a href=""><div class="row bordureMenu" style="font-weight: bold;">Etudiants</div></a>
+						<a href="{{ url_for("gestion_etudiant") }}"><div class="row bordureMenu" style="font-weight: bold;">Etudiants</div></a>
 					</div>
 				</div>
+				{% endblock %}
 			</div>
 			<div class="col-md-10 section-2"> 
 				<div class="row">
+					{% block titre_page %}
 					<div class="col-md-12 title-page">
-						<h2>Gestion des utilisateurs</h2>
+						<h2> Gestion des utilisateurs </h2>
 					</div>
+					{% endblock %}
 				</div>
 				<div class="row">
+					{% block bouton_supprimer %} {% endblock %}
 					<div class="col-md-1 col-md-offset-11 col-button">
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjouter">Ajouter</button>
+						{% block bouton_ajouter %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjouter">Ajouter</button> {% endblock%}
 					</div>
 				</div>
 				<div class="row">
@@ -74,6 +83,8 @@
 			</div>
 		</section> 
 	 </div>
+
+	 {% endblock %}
 
 	 <!-- footer -->
      <footer style="background-color: rgb(16, 100, 121); color: white;">

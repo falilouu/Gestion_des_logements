@@ -2,7 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 
 from flask_mysqldb import MySQL, MySQLdb
 
-from flask_login import LoginManager,UserMixin
+from flask_mail import Mail , Message
+
+#pour le fichier
+import xlrd
+import MySQLdb
+
+from flask_login import LoginManager, UserMixin
 import flask_login
 import bcrypt
 import hashlib
@@ -17,22 +23,57 @@ login_manager.init_app(app)
 
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
+# Trucs mysql
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'test'
 app.config['MYSQL_PASSWORD'] = 'passer'
 app.config['MYSQL_DB'] = 'gestion_logement'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
+
+# Trucs de mail
+app.config['TESTING'] = False
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] =True
+app.config['MAIL_USE_SSL'] = False
+#app.config['MAIL_DEBUG']
+app.config['MAIL_USERNAME'] = 'groupe4ipdl@gmail.com'
+app.config['MAIL_PASSWORD'] = 'passer.1234'
+app.config['MAIL_DEFAULT_SENDER'] = 'groupe4ipdl@gmail.com'
+app.config['MAIL_MAX_EMAILS'] = None
+app.config['MAIL_ASCII_ATTACHEMENTS'] = False
+
+mail = Mail()
+mail.init_app(app)
+
 mysql = MySQL(app)
 
-
-@app.route('/page_admin')
-def lister_user():
+# Page d'admin des gestionnaires
+@app.route('/page_admin/gestionnaire')
+def lister_gestionnaires():
 	cur = mysql.connection.cursor()
 	cur.execute("SELECT id, prenom, nom, email, username, fonction, Pavillon_nom_pavillon, numero FROM gestionnaire where etat='activer'")
 	rows = cur.fetchall()
 	cur.close()
 	return render_template('pages_admin/index.html', users = rows)
+
+
+# Page d'admin des etudiants
+@app.route('/page_admin/etudiant')
+def gestion_etudiant():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
+    rows = cur.fetchall()
+    cur.close()
+    return render_template('pages_admin/gestion_etudiants.html', users = rows)
+
+
+
+# Page des gestionnaires
+@app.route('/page_gestionnaire')
+def index_gestonnaire():
+    return render_template("pages_gestionnaire/index.html")
 
 
 # Ajout d'utilisateur
@@ -56,7 +97,7 @@ def addrec():
         cur.execute("INSERT INTO gestionnaire(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
         mysql.connection.commit()
         cur.close()
-        return redirect(url_for('lister_user'))
+        return redirect(url_for('lister_gestionnaires'))
 
 
 # Suppression
@@ -70,16 +111,16 @@ def delete(user_id):
     """, user_id)
     mysql.connection.commit()
     #cur.close()
-    return redirect(url_for('lister_user'))
+    return redirect(url_for('lister_gestionnaires'))
 
 
 # Modification
-@app.route('/<string:user_id>/update',methods = ['POST'])
+@app.route('/<string:user_id>/update', methods = ['POST'])
 def update(user_id):
     if request.method == 'POST':
 
         # id = request.form['id']
-        nom = request.form['nom']
+        nom = request.form['nom']   
 
         prenom = request.form['prenom']
 
@@ -96,12 +137,11 @@ def update(user_id):
         flash('Data Updtated Successfully')
         mysql.connection.commit()
         #cur.close()
-        return redirect(url_for('lister_user'))
+        return redirect(url_for('lister_gestionnaires'))
 
 
 
 # Login Manager
-
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('login/home.html')
@@ -132,7 +172,7 @@ def login():
             if p == user["mdp"]:
                 session['identifiant']=user["username"]
                 session['prenom']=user["prenom"]
-                return redirect(url_for('lister_user'))
+                return redirect(url_for('lister_gestionnaires'))
             else:
                  return render_template('login/mot_passe_incorrecte.html')
         else:
@@ -173,9 +213,65 @@ def registerAdmin():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
+
     return redirect(url_for('login'))
 
- 
+
+
+# Envoie mail 
+@app.route('/')
+def envoiMailEtudiant():
+	database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
+	cursor = database.cursor()
+	cursor.execute("SELECT prenom, nom, email FROM etudiant")
+	resultat = cursor.fetchall()
+
+	with mail.connect() as conn:
+		for e in resultat:
+			msg = Message('Reservation 2020', recipients=[e[2]])
+			msg.body = 'Salut'+' '+e[0]+' '+e[1]
+			conn.send(msg)
+
+	return 'Message envoyé'
+
+
+# Recuperation des etudiants
+@app.route('/uploadFichier', methods=["POST"])
+def uploadFichierInsertion():
+
+    #inputFile = name de l'input de type file
+    fichier = request.files['inputFile']
+
+    book = xlrd.open_workbook(fichier.filename)
+    sheet = book.sheet_by_name("Feuille1")
+
+    database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
+
+    cursor = database.cursor()
+
+    query = """INSERT INTO etudiant (nom, prenom, niveau, departement, email, telephone, nce, cni, date_de_naissance) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+
+    for r in range(1, sheet.nrows):
+        nom = sheet.cell(r,0).value
+        prenom = sheet.cell(r,1).value
+        niveau = sheet.cell(r,2).value
+        departement = sheet.cell(r,3).value
+        email = sheet.cell(r,4).value
+        telephone = sheet.cell(r,5).value
+        NCE = sheet.cell(r,6).value
+        CNI = sheet.cell(r,7).value
+        date_de_naissance = sheet.cell(r,8).value
+
+
+        values = (nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
+
+        cursor.execute(query, values)
+
+    cursor.close()
+    database.commit()
+    database.close()
+
+    return redirect(url_for('gestion_etudiant'))
 
 if __name__ == '__main__':
     app.run(debug = True)
