@@ -1,8 +1,8 @@
 
 
 //fonction de controle de la page d'inscription
-function validate1() { 
-
+function validate1() 
+{ 
     var msg;
 
     var str = document.getElementById("Passe1").value;
@@ -22,6 +22,7 @@ function validate1() {
     var str7 = document.getElementById("pav").value;
 
     var str8 = document.getElementById("fonct").value;
+
 
 
     if (str!="" && str==str1)
