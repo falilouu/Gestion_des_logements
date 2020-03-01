@@ -69,37 +69,18 @@ def gestion_etudiant():
     return render_template('pages_admin/gestion_etudiants.html', users = rows)
 
 
-# Ajouter pavillon
-@app.route('/add_pavillon', methods = ['POST', 'GET'])
-def add_pavillon():
+
+# Page pavillon
+@app.route('/page_admin/pavillon')
+def gestion_pavillon():
     if 'identifiant' in session:
-        if request.method == 'POST':
-
-            nombre_chambre = request.form['nombre_chambre']
-            nom_pavillon = request.form['nom_pavillon']
-
-            cur = mysql.connection.cursor()
-
-            cur.execute("INSERT INTO chambre(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
-            mysql.connection.commit()
-            cur.close()
-            return redirect(url_for('lister_gestionnaires'))
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT numero_chambre, Pavillon_nom_pavillon FROM chambre")
+        rows = cur.fetchall()
+        cur.close()
+        return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
     else:
         return redirect(url_for("login"))
-
-
-
-# # Page pavillon
-# @app.route('/page_admin/pavillon')
-# def gestion_pavillon():
-#     if 'identifiant' in session:
-#         cur = mysql.connection.cursor()
-#         cur.execute("SELECT numero_chambre, Pavillon_nom_pavillon FROM chambre")
-#         rows = cur.fetchall()
-#         cur.close()
-#         return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
-#     else:
-#         return redirect(url_for("login"))
 
 
 
@@ -144,7 +125,7 @@ def delete(user_id):
     UPDATE gestionnaire
     SET etat = "Desactiver"
     WHERE id = %s
-    """, user_id)
+    """, (user_id,))
     mysql.connection.commit()
     #cur.close()
     return redirect(url_for('lister_gestionnaires'))
@@ -334,8 +315,8 @@ def uploadFichierSuppression():
         NCE = sheet.cell(r,6).value
         CNI = sheet.cell(r,7).value
         date_de_naissance = sheet.cell(r,8).value
-
-	cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE nom=%s and prenom=%s and niveau=%s and departement%s and email%s and telephone%s and NCE%s and CNI%s and date_de_naissance%s""", nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
+        
+        cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE nom=%s and prenom=%s and niveau=%s and departement%s and email%s and telephone%s and NCE%s and CNI%s and date_de_naissance%s""", nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
 
        
     cursor.close()
@@ -346,19 +327,22 @@ def uploadFichierSuppression():
 
 @app.route('/ajoutPavillon', methods=["POST"])
 def ajoutPavillon():
-    database = MySQLdb.connect(host="localhost", user="", passwd="", db="")
+    database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
     cursor = database.cursor()
 
     nombre_chambre = request.form['nombre_chambre']
     nombre_places = request.form['nombre_places']
     nom_pav = request.form['nom_pav']
-    cursor.execute("INSERT INTO pavillon (nom_pavillon) VALUES(nom_pav)")
+    nombre_chambre=int(nombre_chambre)
+    cursor.execute("INSERT INTO pavillon (nom_pavillon) VALUES(%s)", (nom_pav,))
     for r in range(1, nombre_chambre):
-        cursor.execute("INSERT INTO chambre (numero_chambre, Pavillon_nom_pavillon) VALUES(%d, %s)",r,nom_pav)
+        cursor.execute("INSERT INTO chambre (numero_chambre, Pavillon_nom_pavillon, nombre_places) VALUES(%s, %s, %s)",( r, nom_pav, nombre_places))
 
     cursor.close()
     database.commit()
     database.close()
+
+    return redirect(url_for('gestion_pavillon'))
 
 if __name__ == '__main__':
     app.run(debug = True)

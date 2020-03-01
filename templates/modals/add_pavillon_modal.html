@@ -1,7 +1,7 @@
 <!-- Modal Ajouter utilisateur -->
 <script rel="stylesheet" src="{{ url_for("static", filename="js/fiche1.js") }}"></script> 
 
-<form action="{{ url_for("add_pavillon") }}" method="POST">
+<form action="{{ url_for("ajoutPavillon") }}" method="POST">
 
     <div class="modal fade" id="modalAjoutPavllon" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -18,7 +18,7 @@
         
                             <label class="control-label" for="passe">Nom pavillon: </label>
         
-                            <input  type="text" name="nom_pavillon" class="form-control" required >
+                            <input  type="text" name="nom_pav" class="form-control" required>
                         </div>
         
                         <div class="col-lg-5" >
@@ -28,7 +28,19 @@
                             <input  type="number" name="nombre_chambre" class="form-control">
                         </div>
 
-                    </div><br>                   
+                    </div><br>
+
+                    <div class="row" style="padding-left: 15%;">
+        
+                        <div class="col-lg-5 " >
+        
+                            <label class="control-label" for="passe">Nombre de places: </label>
+        
+                            <input  type="number" name="nombre_places" class="form-control" required >
+                        </div>
+
+                    </div><br> 
+
                     <div class="modal-footer" >
                         <span id="msg"></span>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
