@@ -57,7 +57,59 @@ def lister_gestionnaires():
 	rows = cur.fetchall()
 	cur.close()
 	return render_template('pages_admin/index.html', users = rows)
+@app.route('/registerEtudiant/<int:identifiant>', methods=['GET', 'POST'])
+def registerEtudiant(identifiant):
+    tab=[]
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM etudiant WHERE id =%s ",(identifiant,))
+    user=cur.fetchone()
+    cur.execute("SELECT login,email FROM etudiant ")
+    tab.append(cur.fetchone()['login'])
+    tab.append(cur.fetchone()['email'])
+    cur.execute("SELECT username,email FROM gestionnaire")
+    tab.append(cur.fetchone()['email'])
+    tab.append(cur.fetchone()['username'])
+    cur.execute("SELECT username,login FROM administrateur")
+    #tab.append(cur.fetchone()['login'])
+    tab.append(cur.fetchone()['username'])
+    cur.close()
+    
+        
+    if request.method == "GET":
+        
+        
+        if user!=None:
+            
+            return render_template("pages_etudiant/registerEtudiant.html",user=user,tab=tab)
+    else:
+        
+        curs = mysql.connection.cursor()
+        details = request.form
+        login = details['username']
+        mdp = details['mdp'].encode("utf-8")
+        identifiant = user['id']
+        pw_hash =hashlib.sha256(mdp).hexdigest()
+        cure = mysql.connection.cursor()
+        cure.execute("SELECT * FROM etudiant e,gestionnaire g,administrateur a WHERE a.login=%s  or a.username=%s  or e.email=%s  or e.login=%s or g.email=%s  or g.username=%s   ",(login,login,login,login,login,login,))
+        usere=cure.fetchone()
+        cure.close()
+        if usere==None:
+            pw_hash =hashlib.sha256(mdp).hexdigest()
+            curs.execute("UPDATE etudiant SET  mdp=%s,login=%s WHERE id = %s",(pw_hash,login,identifiant,))
+            #users=curs.fetchone()
+            #curs.close()
+            mysql.connection.commit()
+            flash( "Data Updtated Successfully")
+        else:
+            return 'Cet identifiant existe deja'
+        
+        #hash_password=bcrypt.hashpw(mdp,bcrypt.gensalt())
 
+        
+        
+    cur.close()
+    return redirect(url_for('login'))
+    #return render_template('login.html')
 
 # Page d'admin des etudiants
 @app.route('/page_admin/etudiant')
@@ -109,12 +161,20 @@ def addrec():
         username = request.form['username']
         pavillon = request.form['pavillon']
         email = request.form['email']
-
+        identifiant=email
+        pw_hash =hashlib.sha256(mdp).hexdigest()
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO gestionnaire(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
-        mysql.connection.commit()
+        cur.execute("SELECT * FROM etudiant e,gestionnaire g,administrateur a WHERE  a.login=%s  or a.username=%s  or e.email=%s  or e.login=%s or g.email=%s  or g.username=%s ",(identifiant,identifiant,identifiant,identifiant,identifiant,identifiant,))
+        user=cur.fetchone()
         cur.close()
-        return redirect(url_for('lister_gestionnaires'))
+
+        if user==None:
+
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO gestionnaire(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('lister_gestionnaires'))
 
 
 # Suppression
@@ -159,9 +219,6 @@ def update(user_id):
 
 
 # Login Manager
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    return render_template('login/home.html')
 
 
 @login_manager.user_loader
@@ -174,27 +231,46 @@ def login():
         details = request.form
         identifiant =  request.form['identifiant']
         mdp = details['mdp'].encode("utf-8")
-        pw_hash = bcrypt.hashpw(mdp,bcrypt.gensalt())
         
-        cur = mysql.connection.cursor()
         
-        #cur.execute("INSERT INTO administrateur(prenom,nom,login, mdp) VALUES (%s,%s, %s, %s)", (prenom,nom,identifiant,pw_hash))
+        cur=mysql.connection.cursor()
+        #Connexion étudiant
+        cur.execute("SELECT * FROM etudiant WHERE (login =%s or email=%s) and etat=%s",(identifiant,identifiant,"Activer",))
+        user=cur.fetchone()
+       
+        p=hashlib.sha256(mdp).hexdigest()
+       
+        if user!=None:
+            if p==user['mdp']:
+                session['identifiant']=user['id']
+                session['prenom']=user['prenom']
+                return 'render_template("registerEtudiant.html",user=user)'
+        cur.execute("SELECT * FROM gestionnaire WHERE (email =%s or username=%s) and etat=%s",(identifiant,identifiant,"Activer",))
+        user=cur.fetchone()
+        
+        p=hashlib.sha256(mdp).hexdigest()
+       
+        if user!=None:
+            if p==user['mdp']:
+                session['identifiant']=user['identifiant']
+                session['prenom']=user['prenom']
+                return 'render_template("createGestionnaire.html")'
+        #Connexion administrateur
         cur.execute("SELECT * FROM administrateur WHERE login =%s or username=%s",(identifiant,identifiant,))
-        user = cur.fetchone()
+        user=cur.fetchone()
         cur.close()
         p=hashlib.sha256(mdp).hexdigest()
        
         
-        if user != None:
-            if p == user["mdp"]:
-                session['identifiant']=user["username"]
-                session['prenom']=user["prenom"]
-                return redirect(url_for('lister_gestionnaires'))
-            else:
-                 return render_template('login/mot_passe_incorrecte.html')
+        if user!=None:
+            if p==user['mdp']:
+            
+        
+                session['identifiant']=user['identifiant']
+                session['prenom']=user[4]
+                return 'render_template("admin.html")'
         else:
-            return render_template('login/mot_passe_incorrecte.html')
-
+            return "mot de passe incorrecte"
 
             
 @app.route('/register', methods=['GET', 'POST'])
