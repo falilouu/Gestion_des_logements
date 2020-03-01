@@ -1,6 +1,10 @@
 {% extends "layouts/squelette.html" %}
 
-{% block titre_page %} Gestion des étudiants {% endblock %}
+{% block titre_page %} 
+	<div class="col-md-12 title-page">
+		<h2> Gestion des etudiants </h2>
+	</div> 
+{% endblock %}
 
 
 {% block menu %}
@@ -21,7 +25,7 @@
     </div>
     <div class="row menuR">
         <div class="col-md-12 menu">
-            <a href="{{ url_for("gestion_pavillon") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Pavillon</div></a>
+            <a href="{{ url_for("gestion_pavillon") }}"><div class="row bordureMenu" style="font-weight: bold;">Pavillon</div></a>
         </div>
     </div>
 {% endblock %}

@@ -1,6 +1,10 @@
 {% extends "layouts/squelette.html" %}
 
-{% block titre_page %} Gestion des pavillons {% endblock %}
+{% block titre_page %} 
+	<div class="col-md-12 title-page">
+		<h2> Gestion des pavillons </h2>
+	</div> 
+{% endblock %}
 
 
 {% block menu %}
@@ -28,61 +32,37 @@
 
 
 {% block bouton_supprimer %}
-	<div class="col-md-1 col-button">
-		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimer">Supprimer</button>
-	</div>
+	
 {% endblock %}
 
+{% block bouton_ajouter %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjoutPavllon">Ajouter</button> {% endblock%}
 
 {% block contenu_page %}
-	<div class="col-md-12">
+	<div class="col-md-5">
 		<table class="table table-bordered sunu-tableau">
 			<thead class="thead-light">
 			<tr>
 				<th scope="col">#</th>
-				<th scope="col">Prenam</th>
-				<th scope="col">Nom</th>
-				<th scope="col">Niveau</th>
-				<th scope="col">Departement</th>
-				<th scope="col">Email</th>
-				<th scope="col">NCE</th>
-				<th scope="col">CNI</th>
-				<th scope="col">Date de naissance</th>
+				<th scope="col">Numero chambre</th>
+				<th scope="col">Nom pavillon</th>
 				<!-- <th scope="col">Action</th> -->
 			</tr>
 			</thead>
 			<tbody>
 
-			{% for user in users %}
+			{% for pavillon in pavillons %}
 			<tr>
-				<th scope="row">{{ user["id"] }}</th>
-				<td>{{ user["prenom"] }}</td>
-				<td>{{ user["nom"] }}</td>
-				<td>{{ user["niveau"] }}</td>
-				<td>{{ user["departement"] }}</td>
-				<td>{{ user["email"] }}</td>			
-				<td>{{ user["nce"] }}</td>			
-				<td>{{ user["cni"] }}</td>			
-				<td>{{ user["date_de_naissance"] }}</td>			
-				<!-- <td class="col-md-2">
-					<div class="row">
-						<div class="col-md-4 col-md-offset-2">
-							<button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalModifier{{ user["id"] }}">Modifier</button>
-						</div>
-					</div>
-				</td> -->
+				<th scope="row">{{ pavillon["numero_chambre"] }}</th>
+				<td>{{ pavillon["Pavillon_nom_pavillon"] }}</td>			
 			</tr>
-
-			{% include "modals/delete_modal.html" %}
-
-			{% include "modals/update_modal.html" %}
 
 			{% endfor %}
 
 			</tbody>
-		</table>
+        </table>
+        
+		{% include "modals/add_pavillon_modal.html" %}
 		
-		{% include "modals/add_file_modal.html" %}
 		
 	</div>
 {% endblock %}

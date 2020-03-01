@@ -54,20 +54,26 @@
 
 	function validateForm() 
 	{
-		var x = document.forms["add_form"]["username"].value;
-		var y = document.forms["add_form"]["email"].value;
+		var username = document.forms["add_form"]["username"].value;
+		var email = document.forms["add_form"]["email"].value;
 		
 		'{% for user in users %}'
-			if (x == "{{ user['username']}}") 
+			if (email == "{{ user['email'] }}") 
 			{
-				alert("Ce username existe deja !");
+				document.forms["add_form"]["username"].value = "Ce mail existe deja";
+				document.forms["add_form"]["username"].style.color = "red";
 				return false;
 			}
-			else if (y == "{{ user['email']}}") 
+
+			if (username == "{{ user['username'] }}") 
 			{
-				alert("Ce mail existe deja !");
+				// document.getElementById(f[i]).innerHTML = "deedee";
+				// document.getElementById(username).style.display = 'block';
+				document.forms["add_form"]["username"].value = "Ce username existe deja";
+				document.forms["add_form"]["username"].style.color = "red";
 				return false;
 			}
+			
 		'{% endfor %}'
 } 
 	

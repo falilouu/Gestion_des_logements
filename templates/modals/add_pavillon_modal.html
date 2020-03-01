@@ -1,0 +1,43 @@
+<!-- Modal Ajouter utilisateur -->
+<script rel="stylesheet" src="{{ url_for("static", filename="js/fiche1.js") }}"></script> 
+
+<form action="{{ url_for("add_pavillon") }}" method="POST">
+
+    <div class="modal fade" id="modalAjoutPavllon" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header header-modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Ajouter pavillon</h4>
+                </div>
+
+                    <br>
+                    <div class="row" style="padding-left: 15%;">
+        
+                        <div class="col-lg-5 " >
+        
+                            <label class="control-label" for="passe">Nom pavillon: </label>
+        
+                            <input  type="text" name="nom_pavillon" class="form-control" required >
+                        </div>
+        
+                        <div class="col-lg-5" >
+        
+                            <label class="control-label" for="passe">Nombre de chambre </label>
+        
+                            <input  type="number" name="nombre_chambre" class="form-control">
+                        </div>
+
+                    </div><br>                   
+                    <div class="modal-footer" >
+                        <span id="msg"></span>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success" onclick="validate()">Ajouter</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+</form>

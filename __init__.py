@@ -75,6 +75,39 @@ def gestion_etudiant():
         return redirect(url_for("login"))
 
 
+# Ajouter pavillon
+@app.route('/add_pavillon', methods = ['POST', 'GET'])
+def add_pavillon():
+    if 'identifiant' in session:
+        if request.method == 'POST':
+
+            nombre_chambre = request.form['nombre_chambre']
+            nom_pavillon = request.form['nom_pavillon']
+
+            cur = mysql.connection.cursor()
+
+            cur.execute("INSERT INTO chambre(nom,prenom,mdp,fonction,etat,email,username,pavillon_nom_pavillon, numero) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nom, prenom, mdp, fonction, "Activer", email, username, pavillon, numero))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('lister_gestionnaires'))
+    else:
+        return redirect(url_for("login"))
+
+
+
+# # Page pavillon
+# @app.route('/page_admin/pavillon')
+# def gestion_pavillon():
+#     if 'identifiant' in session:
+#         cur = mysql.connection.cursor()
+#         cur.execute("SELECT numero_chambre, Pavillon_nom_pavillon FROM chambre")
+#         rows = cur.fetchall()
+#         cur.close()
+#         return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
+#     else:
+#         return redirect(url_for("login"))
+
+
 
 # Page des gestionnaires
 @app.route('/page_gestionnaire')
@@ -83,6 +116,9 @@ def index_gestonnaire():
         return render_template("pages_gestionnaire/index.html")
     else:
         return redirect(url_for("login"))
+
+
+
 
 
 # Ajout d'utilisateur
@@ -157,7 +193,7 @@ def update(user_id):
 
 # Login Manager
 @login_manager.user_loader
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == "GET":
         return render_template("login/login.html")
