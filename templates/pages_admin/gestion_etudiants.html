@@ -33,7 +33,7 @@
 
 {% block bouton_supprimer %}
 	<div class="col-md-1 col-button">
-		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimer">Supprimer</button>
+		<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimerEtudiant">Supprimer</button>
 	</div>
 {% endblock %}
 
@@ -77,16 +77,15 @@
 				</td> -->
 			</tr>
 
-			{% include "modals/delete_modal.html" %}
-
-			{% include "modals/update_modal.html" %}
 
 			{% endfor %}
+
 
 			</tbody>
 		</table>
 		
 		{% include "modals/add_file_modal.html" %}
+		{% include "modals/delete_etudiant_modal.html" %}
 		
 	</div>
 {% endblock %}

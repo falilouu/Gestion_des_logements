@@ -316,7 +316,7 @@ def uploadFichierSuppression():
         CNI = sheet.cell(r,7).value
         date_de_naissance = sheet.cell(r,8).value
         
-        cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE nom=%s and prenom=%s and niveau=%s and departement%s and email%s and telephone%s and NCE%s and CNI%s and date_de_naissance%s""", nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
+        cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE nom = %s and prenom = %s and niveau = %s and departement = %s and email = %s and telephone = %s and NCE = %s and CNI = %s and date_de_naissance = %s """, (nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance))
 
        
     cursor.close()
