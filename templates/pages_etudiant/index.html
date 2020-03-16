@@ -1,0 +1,69 @@
+{% extends "layouts/squelette.html" %}
+
+{% block titre_page %} 
+	<div class="col-md-12 title-page">
+		<h2> Gestion des pavillons </h2>
+	</div> 
+{% endblock %}
+
+
+{% block menu %}
+	<div class="row">
+		<div class="col-md-12 general">
+			<p class="">General</p>
+		</div>
+	</div>
+    <div class="row menuR">
+        <div class="col-md-12 menu">
+            <a href="{{ url_for("lister_gestionnaires") }}"><div class="row bordureMenu" style="font-weight: bold;">Gestionnaires</div></a>
+        </div>
+    </div>
+    <div class="row menuR">
+        <div class="col-md-12 menu">
+            <a href="{{ url_for("gestion_etudiant") }}"><div class="row bordureMenu" style="font-weight: bold;">Etudiants</div></a>
+        </div>
+    </div>
+    <div class="row menuR">
+        <div class="col-md-12 menu">
+            <a href="{{ url_for("gestion_pavillon") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Pavillon</div></a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block bouton_supprimer %}
+	
+{% endblock %}
+
+{% block bouton_ajouter %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjoutPavllon">Ajouter</button> {% endblock%}
+
+{% block contenu_page %}
+	<div class="col-md-5">
+		<table class="table table-bordered sunu-tableau">
+			<thead class="thead-light">
+			<tr>
+				<th scope="col">Numero chambre</th>
+				<th scope="col">Nom pavillon</th>
+				<th scope="col">Nombre de place</th>
+				<!-- <th scope="col">Action</th> -->
+			</tr>
+			</thead>
+			<tbody>
+
+			{% for pavillon in pavillons %}
+			<tr>
+				<td scope="row"> {{ pavillon["numero_chambre"] }} </td>
+				<td> {{ pavillon["Pavillon_nom_pavillon"] }} </td>			
+				<td> {{ pavillon["nombre_places"] }} </td>			
+			</tr>
+
+			{% endfor %}
+
+			</tbody>
+        </table>
+        
+		{% include "modals/add_pavillon_modal.html" %}
+		
+		
+	</div>
+{% endblock %}

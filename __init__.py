@@ -122,12 +122,12 @@ def gestion_etudiant():
 
 
 
-# Page pavillon
+# Page admin pavillon
 @app.route('/page_admin/pavillon')
 def gestion_pavillon():
     if 'identifiant' in session:
         cur = mysql.connection.cursor()
-        cur.execute("SELECT numero_chambre, Pavillon_nom_pavillon FROM chambre")
+        cur.execute("SELECT * FROM chambre")
         rows = cur.fetchall()
         cur.close()
         return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
@@ -140,8 +140,6 @@ def gestion_pavillon():
 @app.route('/page_gestionnaire')
 def index_gestonnaire():
     return render_template("pages_gestionnaire/index.html")
-
-
 
 
 
@@ -248,7 +246,7 @@ def login():
         cur.execute("SELECT * FROM gestionnaire WHERE (email =%s or username=%s) and etat=%s",(identifiant,identifiant,"Activer",))
         user=cur.fetchone()
         
-        p=hashlib.sha256(mdp).hexdigest()
+        p=hashlib.sha256(mdp).hexdigest() 
        
         if user!=None:
             if p==user['mdp']:
@@ -265,10 +263,9 @@ def login():
         if user!=None:
             if p==user['mdp']:
             
-        
-                session['identifiant']=user['identifiant']
-                session['prenom']=user[4]
-                return 'render_template("admin.html")'
+                session['identifiant']=user['username']
+                session['prenom']=user['prenom']
+                return render_template("pages_admin/index.html")
         else:
             return "mot de passe incorrecte"
 
@@ -354,7 +351,6 @@ def uploadFichierInsertion():
         NCE = sheet.cell(r,6).value
         CNI = sheet.cell(r,7).value
         date_de_naissance = sheet.cell(r,8).value
-
 
         values = (nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
 

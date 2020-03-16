@@ -10,7 +10,7 @@
 {% block menu %}
 	<div class="row">
 		<div class="col-md-12 general">
-			<p class="">Gestion des utilisateurs</p>
+			<p class="">General</p>
 		</div>
 	</div>
     <div class="row menuR">
@@ -42,9 +42,9 @@
 		<table class="table table-bordered sunu-tableau">
 			<thead class="thead-light">
 			<tr>
-				<th scope="col">#</th>
 				<th scope="col">Numero chambre</th>
 				<th scope="col">Nom pavillon</th>
+				<th scope="col">Nombre de place</th>
 				<!-- <th scope="col">Action</th> -->
 			</tr>
 			</thead>
@@ -52,8 +52,9 @@
 
 			{% for pavillon in pavillons %}
 			<tr>
-				<th scope="row">{{ pavillon["numero_chambre"] }}</th>
-				<td>{{ pavillon["Pavillon_nom_pavillon"] }}</td>			
+				<td scope="row"> {{ pavillon["numero_chambre"] }} </td>
+				<td> {{ pavillon["Pavillon_nom_pavillon"] }} </td>			
+				<td> {{ pavillon["nombre_places"] }} </td>			
 			</tr>
 
 			{% endfor %}
