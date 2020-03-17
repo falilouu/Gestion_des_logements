@@ -107,7 +107,7 @@ h4
 	box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 	font-weight: 900;
-	margin-left: 110px !important;
+	margin-left: 80px !important;
 	font-size: 25px;
 	color: white !important;
 	border-radius: 5px;
@@ -240,4 +240,11 @@ h4
 {
 	background-color: rgb(16, 100, 121);
 	color:#f4934e;
+}
+
+.form-reservation
+{
+	margin-top: 20px;
+	box-shadow: 0 3px 5px rgba(0,0,0,0.12), 0 3px 6px rgba(0,0,0,0.23);
+	background-color: rgb(255, 254, 254);
 }

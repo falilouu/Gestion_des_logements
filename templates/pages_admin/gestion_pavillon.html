@@ -38,13 +38,14 @@
 {% block bouton_ajouter %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjoutPavllon">Ajouter</button> {% endblock%}
 
 {% block contenu_page %}
-	<div class="col-md-5">
+	<div class="col-md-8">
 		<table class="table table-bordered sunu-tableau">
 			<thead class="thead-light">
 			<tr>
 				<th scope="col">Numero chambre</th>
 				<th scope="col">Nom pavillon</th>
-				<th scope="col">Nombre de place</th>
+				<th scope="col">Nombre de places</th>
+				<th scope="col">Nombre de places disponibles </th>
 				<!-- <th scope="col">Action</th> -->
 			</tr>
 			</thead>
@@ -55,6 +56,7 @@
 				<td scope="row"> {{ pavillon["numero_chambre"] }} </td>
 				<td> {{ pavillon["Pavillon_nom_pavillon"] }} </td>			
 				<td> {{ pavillon["nombre_places"] }} </td>			
+				<td> {{ pavillon["nombre_places_dispo"] }} </td>			
 			</tr>
 
 			{% endfor %}

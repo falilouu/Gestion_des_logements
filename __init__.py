@@ -142,6 +142,22 @@ def index_gestonnaire():
     return render_template("pages_gestionnaire/index.html")
 
 
+# Page des etudiants
+@app.route('/page_etudiant')
+def index_etudiant():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM chambre")
+    chambres = cur.fetchall()
+
+    cur.execute("SELECT * FROM pavillon")
+    pavillons = cur.fetchall()
+    cur.close()
+
+    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres)
+
+
+
+
 
 # Ajout d'utilisateur
 @app.route('/addrec', methods = ['POST', 'GET'])
@@ -175,7 +191,7 @@ def addrec():
             return redirect(url_for('lister_gestionnaires'))
 
 
-# Suppression
+# Suppression gestionnaire
 @app.route('/user/<string:user_id>/delete', methods = ['POST'])
 def delete(user_id):
     cur = mysql.connection.cursor()
@@ -189,7 +205,7 @@ def delete(user_id):
     return redirect(url_for('lister_gestionnaires'))
 
 
-# Modification
+# Modification gestionnaire
 @app.route('/<string:user_id>/update', methods = ['POST'])
 def update(user_id):
     if request.method == 'POST':
@@ -217,7 +233,6 @@ def update(user_id):
 
 
 # Login Manager
-
 
 @login_manager.user_loader
 @app.route('/', methods=['GET', 'POST'])
@@ -397,6 +412,8 @@ def uploadFichierSuppression():
 
     return redirect(url_for('gestion_etudiant'))
 
+
+# Ajout de pavillon
 @app.route('/ajoutPavillon', methods=["POST"])
 def ajoutPavillon():
     database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
@@ -405,10 +422,10 @@ def ajoutPavillon():
     nombre_chambre = request.form['nombre_chambre']
     nombre_places = request.form['nombre_places']
     nom_pav = request.form['nom_pav']
-    nombre_chambre=int(nombre_chambre)
+    nombre_chambre = int(nombre_chambre)
     cursor.execute("INSERT INTO pavillon (nom_pavillon) VALUES(%s)", (nom_pav,))
     for r in range(1, nombre_chambre):
-        cursor.execute("INSERT INTO chambre (numero_chambre, Pavillon_nom_pavillon, nombre_places) VALUES(%s, %s, %s)",( r, nom_pav, nombre_places))
+        cursor.execute("INSERT INTO chambre (numero_chambre, Pavillon_nom_pavillon, nombre_places, nombre_places_dispo) VALUES(%s, %s, %s, %s)",( r, nom_pav, nombre_places, nombre_places))
 
     cursor.close()
     database.commit()

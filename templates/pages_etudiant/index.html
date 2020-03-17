@@ -1,8 +1,10 @@
 {% extends "layouts/squelette.html" %}
 
+{% block titre_site %} Espace etudiant {% endblock %}
+
 {% block titre_page %} 
 	<div class="col-md-12 title-page">
-		<h2> Gestion des pavillons </h2>
+		<h2> Reservation </h2>
 	</div> 
 {% endblock %}
 
@@ -15,17 +17,7 @@
 	</div>
     <div class="row menuR">
         <div class="col-md-12 menu">
-            <a href="{{ url_for("lister_gestionnaires") }}"><div class="row bordureMenu" style="font-weight: bold;">Gestionnaires</div></a>
-        </div>
-    </div>
-    <div class="row menuR">
-        <div class="col-md-12 menu">
-            <a href="{{ url_for("gestion_etudiant") }}"><div class="row bordureMenu" style="font-weight: bold;">Etudiants</div></a>
-        </div>
-    </div>
-    <div class="row menuR">
-        <div class="col-md-12 menu">
-            <a href="{{ url_for("gestion_pavillon") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Pavillon</div></a>
+            <a href="{{ url_for("lister_gestionnaires") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Reservation</div></a>
         </div>
     </div>
 {% endblock %}
@@ -35,35 +27,88 @@
 	
 {% endblock %}
 
-{% block bouton_ajouter %}<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjoutPavllon">Ajouter</button> {% endblock%}
+{% block bouton_ajouter %} {% endblock%}
 
 {% block contenu_page %}
-	<div class="col-md-5">
-		<table class="table table-bordered sunu-tableau">
-			<thead class="thead-light">
-			<tr>
-				<th scope="col">Numero chambre</th>
-				<th scope="col">Nom pavillon</th>
-				<th scope="col">Nombre de place</th>
-				<!-- <th scope="col">Action</th> -->
-			</tr>
-			</thead>
-			<tbody>
+	<div class="col-md-7">
+		<form action="{{ url_for("ajoutPavillon") }}" method="POST" class="form-reservation">	
+			<div class="row" style="padding-left: 10%;">
+				<div style=" margin-top: 30px;"></div>
 
-			{% for pavillon in pavillons %}
-			<tr>
-				<td scope="row"> {{ pavillon["numero_chambre"] }} </td>
-				<td> {{ pavillon["Pavillon_nom_pavillon"] }} </td>			
-				<td> {{ pavillon["nombre_places"] }} </td>			
-			</tr>
+				<div class="col-lg-3" >
+					<label class="control-label" for="pav">Pavillon: </label><br>
 
-			{% endfor %}
+						<select onchange="remplirChambre(this.value)" type="text" name="pavillon" id="pav"  class="form-control" required  style="background-color:rgb(252,252,252);">
 
-			</tbody>
-        </table>
-        
-		{% include "modals/add_pavillon_modal.html" %}
-		
-		
+							{% for pavillon in pavillons %}
+								<option value="{{ pavillon['nom_pavillon'] }}">{{ pavillon['nom_pavillon'] }}</option>
+							{% endfor %}
+								
+
+						</select >
+				</div>
+
+				<div class="col-lg-4" >
+
+					<label class="control-label" for="pav">Numero de chambre: </label><br>
+
+						<select onchange="remplirPlaces(this.value)" type="text" name="numero_chambre" id="numero_chambre" class="form-control" required  style="background-color:rgb(252,252,252);">
+
+							<!-- <option value="pavillon-A">Pavillon-A</option> -->
+
+						</select >
+				</div>
+
+				<div class="col-lg-4" id="nombre_places_dispo" style="margin-top: 32px; padding-left: 0px;">
+					*Places restantes ici !*
+				</div><br>
+
+			</div><br>
+
+			<div class="row">
+				<div class="col-lg-2 col-md-offset-10">
+					<input type="submit" name="nombre_places" value="Valider" class="btn btn-success" class="form-control" required >
+				</div>
+			</div><br>
+
+			
+		</form>
 	</div>
 {% endblock %}
+
+{% block script %}
+
+<script>
+	function remplirChambre(pav) 
+	{
+		document.getElementById("numero_chambre").options.length = 0;
+		
+		var chambre = document.getElementById("numero_chambre");
+
+		'{% for chambre in chambres%}'
+			var i = 1;
+			if (pav == "{{ chambre['Pavillon_nom_pavillon'] }}") 
+			{
+				var c = document.createElement("option");
+				c.text = "{{ chambre['numero_chambre'] }}";
+				chambre.options.add(c,i);
+				i = i+1;
+
+				document.getElementById("nombre_places_dispo").innerHTML = "Places restantes : {{ chambre['nombre_places_dispo'] }}"
+			}
+		'{% endfor %}'
+	}
+
+	function remplirPlaces(chambre) 
+	{
+		'{% for chambre in chambres%}'
+			if (chambre == "{{ chambre['numero_chambre'] }}") 
+			{
+				document.getElementById("nombre_places_dispo").innerHTML = "Places restantes : {{ chambre['nombre_places_dispo'] }}"
+			}
+		'{% endfor %}'
+	}
+	
+</script>
+
+{% endblock%}
