@@ -23,10 +23,11 @@
 						<a class="navbar-brand accueil" href="#">{% block titre_site %} Espace administrateur {% endblock %}</a>
 					</div>
 				
-						
+					{% block dec %}	
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#" style="font-weight : 600"><form action="{{ url_for("logout") }}"><button type="submit" class="btn btn-primary btn-decon">Déconnexion</button></form></a></li>
 					</ul>
+					{% endblock %}
 				</div>
 			</nav>
 		</div>
@@ -91,7 +92,9 @@
 
 	 {% endblock %}
 
+
 	 <!-- footer -->
+	 {% block footer %}
      <footer style="background-color: rgb(16, 100, 121); color: white;">
         <div class="container-fluid">
             <div class="row">
@@ -100,7 +103,8 @@
 				</div>
             </div>  
         </div>
-     </footer>
+	 </footer>
+	 {% endblock %}
 	 <!-- end of footer -->
 	 
 	 

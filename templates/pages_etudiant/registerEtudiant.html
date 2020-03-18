@@ -1,86 +1,79 @@
+{% extends "layouts/squelette.html" %}
 
-{% block title %} Connexion {% endblock %}
-{% block include_css %} 
-    <link rel="stylesheet" type="text/css" media="screen" href="css.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="all.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.min.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="boostrap.bundle.min.css">
-{% endblock%}
-{% block body %} 
+{% block titre %} Page etudiant {% endblock %}
+{% block titre_site %} Espace etudiant {% endblock %}
 
-    <form name="add_form" method="POST" action="{{ url_for('registerEtudiant', identifiant = user['id'])}}" onsubmit="return validateForm()">
-        
-            <div class="container">
-              <div class="row">
-                <div class="col-sm-9 col-md-7 col-lg-8 mx-auto">
-                  <div class="card card-signin my-5">
-                    <div class="card-body">
-                      <h1 class="card-title text-center">Inscription</h1>
-                      <form class="form-signin">
-                        
-                        <div class="form-label-group">
-                            <input name="prenom" value="{{user['prenom']}}" type="text" id="prenom" class="form-control" placeholder="Prenom" required autofocus disabled>
-                            <label for="prenom">Prenom</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="nom" disabled  value="{{user['nom'] }}" type="text" id="nom" class="form-control" placeholder="Nom" required autofocus>
-                            <label for="nom">Nom</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="niveau"  value="{{user['niveau'] }}" disabled type="text" id="niveau" class="form-control" placeholder="niveau" required autofocus>
-                            <label for="niveau">niveau</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="departement"  value="{{user['departement'] }}" disabled type="text" id="departement" class="form-control" placeholder="departement" required autofocus>
-                            <label for="departement">Département</label>
-                        </div>
-                        
-                        <div class="form-label-group">
-                          <input name="email" disabled  value="{{user['email'] }}" type="email" id="inputEmail" class="form-control" placeholder="Identifiant" required autofocus>
-                          <label for="inputEmail">Email </label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="ine"  value="{{user['telephone'] }}" disabled  type="number" id="telephone" class="form-control" placeholder="telephone" required autofocus>
-                            <label for="telephone">Téléphone</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="ine"   type="text" id="ine" class="form-control" placeholder="ine" required autofocus>
-                            <label for="ine">identifiant numero etudiant</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input  name="cni" type="number" id="cni" class="form-control" placeholder="cni" required autofocus>
-                            <label for="cni">carte d  identité</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="dateNaissance" value="{{user['date_de_naissance'] }}" disabled type="text" id="dateNaissance" class="form-control" placeholder="Nom utlisateur" required autofocus>
-                            <label for="dateNaissance">Date de naissance</label>
-                        </div>
-                        <div class="form-label-group">
-                          <input name="username" type="texte" id="username" class="form-control" placeholder="Nom utlisateur" required autofocus>
-                          <label for="username">Login </label>
-                        </div>
-          
-                        <div class="form-label-group">
-                          <input name="mdp" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
-                          <label for="inputPassword">Mot de passe</label>
-                        </div>
-                        <div class="form-label-group">
-                            <input name="mdp2" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
-                            <label for="inputPassword">Confirmation mot de passe </label>
-                          </div>
-                          
-                          
-                        <button  class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Enregistrer</button>
-                        
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+{% block dec %} 
+  <ul class="nav navbar-nav navbar-right">
+    <li><a href="#" style="font-weight : 600"><form action="{{ url_for("logout") }}"><button type="submit" class="btn btn-primary btn-conn">Connexion</button></form></a></li>
+  </ul>
+{% endblock %}
+  
+{% block corps %} 
+
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4" style="padding: 22px;">
+      <form name="add_form" method="POST" action="" onsubmit="return validateForm()">
+
+            <div class="form-group">
+                <label for="prenom">Prenom</label>
+                <input name="prenom" value="{{user['prenom']}}" type="text" id="prenom" class="form-control" placeholder="Prenom" required autofocus disabled>
             </div>
-       
-          
-    </form>
+            <div class="form-group">
+                <label for="nom">Nom</label>
+                <input name="nom" disabled  value="{{user['nom'] }}" type="text" id="nom" class="form-control" placeholder="Nom" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="niveau">niveau</label>
+                <input name="niveau" value="{{user['niveau'] }}" disabled type="text" id="niveau" class="form-control" placeholder="niveau" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="departement">Département</label>
+                <input name="departement"  value="{{user['departement'] }}" disabled type="text" id="departement" class="form-control" placeholder="departement" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="inputEmail">Email </label>
+              <input name="email" disabled  value="{{user['email'] }}" type="email" id="inputEmail" class="form-control" placeholder="Identifiant" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input name="ine"  value="{{user['telephone'] }}" disabled  type="number" id="telephone" class="form-control" placeholder="telephone" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="ine">identifiant numero etudiant</label>
+                <input name="ine"   type="text" id="ine" class="form-control" placeholder="ine" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="cni">carte d  identité</label>
+                <input  name="cni" type="number" id="cni" class="form-control" placeholder="cni" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="dateNaissance">Date de naissance</label>
+                <input name="dateNaissance" value="{{user['date_de_naissance'] }}" disabled type="text" id="dateNaissance" class="form-control" placeholder="Nom utlisateur" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="username">Login </label>
+              <input name="username" type="texte" id="username" class="form-control" placeholder="Nom utlisateur" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="inputPassword">Mot de passe</label>
+              <input name="mdp" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword">Confirmation mot de passe </label>
+                <input name="mdp2" type="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+            </div>
+              
+              
+            <button  class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Enregistrer</button>
+        
+      </form>
+      </div>
+    </div>
+
+
     <script>
       function validateForm() 
       {
@@ -88,9 +81,8 @@
         var y = document.forms["add_form"]["email"].value;
         var a = document.forms["add_form"]["mdp"].value;
         var b = document.forms["add_form"]["mdp2"].value;
-        if (a==b) {
-            
-       
+        if (a==b) 
+        {
             '{% for item in range(tab|length) %}'
             if (x == "{{ tab[item]}}") 
             {
@@ -109,6 +101,5 @@
     }
   </script>
 {% endblock %}
-{% block include_js %}
-<script src="jquery.js" ></script>
-{% endblock%}
+
+{% block footer %} {% endblock %}

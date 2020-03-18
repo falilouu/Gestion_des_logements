@@ -57,6 +57,68 @@ def lister_gestionnaires():
 	rows = cur.fetchall()
 	cur.close()
 	return render_template('pages_admin/index.html', users = rows)
+
+
+
+# Page d'admin des etudiants
+@app.route('/page_admin/etudiant')
+def gestion_etudiant():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
+    rows = cur.fetchall()
+    cur.close()
+    return render_template('pages_admin/gestion_etudiants.html', users = rows)
+
+
+
+# Page admin pavillon
+@app.route('/page_admin/pavillon')
+def gestion_pavillon():
+    if 'identifiant' in session:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM chambre")
+        rows = cur.fetchall()
+        cur.close()
+        return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
+    else:
+        return redirect(url_for("login"))
+
+
+
+# Page des gestionnaires
+@app.route('/page_gestionnaire')
+def index_gestonnaire():
+    return render_template("pages_gestionnaire/index.html")
+
+
+
+# Page pour les etudiants
+@app.route('/page_etudiant')
+def index_etudiant():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM chambre")
+    chambres = cur.fetchall()
+
+    cur.execute("SELECT * FROM pavillon")
+    pavillons = cur.fetchall()
+    cur.close()
+
+    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres)
+
+
+# Page de creation compte etudiant
+@app.route('/etudiant/creationCompte/<int:identifiant>')
+def creationCompteEtudiant(identifiant):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM etudiant WHERE id =%s ",(identifiant,))
+    user = cur.fetchone()
+
+    return render_template("pages_etudiant/registerEtudiant.html", user = user)
+
+
+
+
+# Page de creation compte etudiant
 @app.route('/registerEtudiant/<int:identifiant>', methods=['GET', 'POST'])
 def registerEtudiant(identifiant):
     tab=[]
@@ -111,55 +173,11 @@ def registerEtudiant(identifiant):
     return redirect(url_for('login'))
     #return render_template('login.html')
 
-# Page d'admin des etudiants
-@app.route('/page_admin/etudiant')
-def gestion_etudiant():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
-    rows = cur.fetchall()
-    cur.close()
-    return render_template('pages_admin/gestion_etudiants.html', users = rows)
-
-
-
-# Page admin pavillon
-@app.route('/page_admin/pavillon')
-def gestion_pavillon():
-    if 'identifiant' in session:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM chambre")
-        rows = cur.fetchall()
-        cur.close()
-        return render_template("pages_admin/gestion_pavillon.html", pavillons = rows)
-    else:
-        return redirect(url_for("login"))
-
-
-
-# Page des gestionnaires
-@app.route('/page_gestionnaire')
-def index_gestonnaire():
-    return render_template("pages_gestionnaire/index.html")
-
-
-# Page des etudiants
-@app.route('/page_etudiant')
-def index_etudiant():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM chambre")
-    chambres = cur.fetchall()
-
-    cur.execute("SELECT * FROM pavillon")
-    pavillons = cur.fetchall()
-    cur.close()
-
-    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres)
 
 
 
 
-
-# Ajout d'utilisateur
+# Ajout de gestionnaire et comptable 
 @app.route('/addrec', methods = ['POST', 'GET'])
 def addrec():
     if request.method == 'POST':
@@ -233,7 +251,6 @@ def update(user_id):
 
 
 # Login Manager
-
 @login_manager.user_loader
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -334,7 +351,7 @@ def envoiMailEtudiant():
     with mail.connect() as conn:
         for e in resultat:
             msg = Message('Reservation 2020', recipients=[e[2]])
-            msg.body = 'Salut'+' '+e[0]+' '+e[1]+' Vous pouvez vous inscrire sur le lien suivant pour les besoins de logements du campus social '+'/etudiant/creationcCompte/'+e[3]
+            msg.body = 'Salut'+' '+e[0]+' '+e[1]+' Vous pouvez vous inscrire sur le lien suivant pour les besoins de logements du campus social '+'/etudiant/creationCompte/'+e[3]
             conn.send(msg)
 
     return 'Message envoyé'
