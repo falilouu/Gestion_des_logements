@@ -142,7 +142,7 @@ CREATE TABLE `reservation` (
   `etat_payement` varchar(45) DEFAULT NULL,
   `date_reservation` datetime DEFAULT NULL,
   `Gestionnaire_id` int(11) NOT NULL,
-  `Gestionnaire_Pavillon_nom_pavillon` varchar(50) NOT NULL,
+  `Pavillon_nom_pavillon` varchar(50) NOT NULL,
   `Chambre_numero_chambre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -193,10 +193,11 @@ ALTER TABLE `pavillon`
 -- Index pour la table `reservation`
 --
 ALTER TABLE `reservation`
-  ADD PRIMARY KEY (`id`,`Etudiant_id`,`Gestionnaire_id`,`Gestionnaire_Pavillon_nom_pavillon`,`Chambre_numero_chambre`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `fk_Reservation_Etudiant1_idx` (`Etudiant_id`),
-  ADD KEY `fk_Reservation_Gestionnaire1_idx` (`Gestionnaire_id`,`Gestionnaire_Pavillon_nom_pavillon`),
-  ADD KEY `fk_Reservation_Chambre1_idx` (`Chambre_numero_chambre`);
+  ADD KEY `fk_Reservation_Gestionnaire1_idx` (`Gestionnaire_id`),
+  ADD KEY `fk_Reservation_Chambre1_idx` (`Chambre_numero_chambre`),
+  ADD KEY `fk_Reservation_Pavillon` (`Pavillon_nom_pavillon`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -248,7 +249,8 @@ ALTER TABLE `gestionnaire`
 ALTER TABLE `reservation`
   ADD CONSTRAINT `fk_Reservation_Chambre1` FOREIGN KEY (`Chambre_numero_chambre`) REFERENCES `chambre` (`numero_chambre`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Reservation_Etudiant1` FOREIGN KEY (`Etudiant_id`) REFERENCES `etudiant` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Reservation_Gestionnaire1` FOREIGN KEY (`Gestionnaire_id`,`Gestionnaire_Pavillon_nom_pavillon`) REFERENCES `gestionnaire` (`id`, `Pavillon_nom_pavillon`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Reservation_Gestionnaire1` FOREIGN KEY (`Gestionnaire_id`) REFERENCES `gestionnaire` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Reservation_Pavillon` FOREIGN KEY (`Pavillon_nom_pavillon`) REFERENCES `pavillon` (`nom_pavillon`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 --
 -- Base de données : `phpmyadmin`
 --

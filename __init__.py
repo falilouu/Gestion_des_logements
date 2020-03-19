@@ -87,8 +87,12 @@ def gestion_pavillon():
 
 # Page des gestionnaires
 @app.route('/page_gestionnaire')
-def index_gestonnaire():
-    return render_template("pages_gestionnaire/index.html")
+def index_gestionnaire():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT r.id, e.nom, e.prenom, r.date_reservation, r.pavillon_nom_pavillon, r.chambre_numero_chambre FROM reservation r, etudiant e WHERE e.id = r.Etudiant_id ")
+    reservations = cur.fetchall()
+    cur.close()
+    return render_template("pages_gestionnaire/index.html", reservations = reservations)
 
 
 
@@ -103,7 +107,7 @@ def index_etudiant():
     pavillons = cur.fetchall()
     cur.close()
 
-    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres)
+    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres, user = session['identifiant'])
 
 
 # Page de creation compte etudiant
@@ -125,12 +129,12 @@ def registerEtudiant(identifiant):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM etudiant WHERE id =%s ",(identifiant,))
     user=cur.fetchone()
-    cur.execute("SELECT login,email FROM etudiant ")
+    cur.execute("SELECT login, email FROM etudiant ")
     tab.append(cur.fetchone()['login'])
     tab.append(cur.fetchone()['email'])
     cur.execute("SELECT username,email FROM gestionnaire")
     tab.append(cur.fetchone()['email'])
-    tab.append(cur.fetchone()['username'])
+    # tab.append(cur.fetchone()['username'])
     cur.execute("SELECT username,login FROM administrateur")
     #tab.append(cur.fetchone()['login'])
     tab.append(cur.fetchone()['username'])
@@ -155,6 +159,7 @@ def registerEtudiant(identifiant):
         cure.execute("SELECT * FROM etudiant e,gestionnaire g,administrateur a WHERE a.login=%s  or a.username=%s  or e.email=%s  or e.login=%s or g.email=%s  or g.username=%s   ",(login,login,login,login,login,login,))
         usere=cure.fetchone()
         cure.close()
+
         if usere==None:
             pw_hash =hashlib.sha256(mdp).hexdigest()
             curs.execute("UPDATE etudiant SET  mdp=%s,login=%s WHERE id = %s",(pw_hash,login,identifiant,))
@@ -177,7 +182,7 @@ def registerEtudiant(identifiant):
 
 
 
-# Ajout de gestionnaire et comptable 
+# Ajout de gestionnaire ou comptable 
 @app.route('/addrec', methods = ['POST', 'GET'])
 def addrec():
     if request.method == 'POST':
@@ -250,7 +255,7 @@ def update(user_id):
 
 
 
-# Login Manager
+# Login des users
 @login_manager.user_loader
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -264,6 +269,7 @@ def login():
         
         
         cur=mysql.connection.cursor()
+
         #Connexion étudiant
         cur.execute("SELECT * FROM etudiant WHERE (login =%s or email=%s) and etat=%s",(identifiant,identifiant,"Activer",))
         user=cur.fetchone()
@@ -271,37 +277,44 @@ def login():
         p=hashlib.sha256(mdp).hexdigest()
        
         if user!=None:
-            if p==user['mdp']:
-                session['identifiant']=user['id']
-                session['prenom']=user['prenom']
-                return 'render_template("registerEtudiant.html",user=user)'
+            if p == user['mdp']:
+                session['identifiant'] = user['id']
+                session['prenom'] = user['prenom']
+                return redirect(url_for("index_etudiant"))
+
+        # Connexion gestionnaire
         cur.execute("SELECT * FROM gestionnaire WHERE (email =%s or username=%s) and etat=%s",(identifiant,identifiant,"Activer",))
         user=cur.fetchone()
         
-        p=hashlib.sha256(mdp).hexdigest() 
+        # p=hashlib.sha256(mdp).hexdigest() 
        
         if user!=None:
-            if p==user['mdp']:
-                session['identifiant']=user['identifiant']
-                session['prenom']=user['prenom']
-                return 'render_template("createGestionnaire.html")'
-        #Connexion administrateur
+            mdp = mdp.decode("utf-8")
+            if mdp == user['mdp']:
+                session['identifiant'] = user['username']
+                session['prenom'] = user['prenom']
+
+                if user['fonction'] == "Chef de pavillon":
+                    return render_template("pages_gestionnaire/index.html", user = user)
+                else:
+                    return render_template("pages_comptable/index.html", user = user)
+
+        # Connexion administrateur
         cur.execute("SELECT * FROM administrateur WHERE login =%s or username=%s",(identifiant,identifiant,))
         user=cur.fetchone()
         cur.close()
         p=hashlib.sha256(mdp).hexdigest()
        
         
-        if user!=None:
+        if user != None:
             if p==user['mdp']:
-            
-                session['identifiant']=user['username']
-                session['prenom']=user['prenom']
+                session['identifiant'] = user['username']
+                session['prenom'] = user['prenom']
                 return render_template("pages_admin/index.html")
         else:
             return "mot de passe incorrecte"
 
-            
+           
 @app.route('/register', methods=['GET', 'POST'])
 def registerAdmin():
     if request.method == "GET":
@@ -331,7 +344,7 @@ def registerAdmin():
     return render_template('login/login.html')
 
 
-
+# Deconnexion
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
@@ -394,8 +407,8 @@ def uploadFichierInsertion():
 
     return redirect(url_for('gestion_etudiant'))
 
+# Supprimer etudiants
 @app.route('/uploadFichierSuppression', methods=["POST"])
-
 def uploadFichierSuppression():
 
     #inputFile = name de l'input de type file
@@ -449,6 +462,30 @@ def ajoutPavillon():
     database.close()
 
     return redirect(url_for('gestion_pavillon'))
+
+
+# Enregistrer reservation
+@app.route('/ajoutReservation', methods=["POST"])
+def ajoutReservation():
+    pavillon = request.form['pavillon']
+    numero_chambre = request.form['numero_chambre']
+    etudiant_id = session['identifiant']
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM reservation WHERE Etudiant_id = %s AND Pavillon_nom_pavillon = %s AND Chambre_numero_chambre = %s", (etudiant_id, pavillon, numero_chambre))
+
+    query = cur.fetchone()
+    cur.close()
+
+    if query == None:
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO reservation (date_reservation, Etudiant_id, Pavillon_nom_pavillon, Chambre_numero_chambre ) VALUES (NOW(), %s, %s, %s)", (etudiant_id, pavillon, numero_chambre))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('index_etudiant'))
+    else:
+        return redirect(url_for('index_etudiant'))
+
 
 if __name__ == '__main__':
     app.run(debug = True)

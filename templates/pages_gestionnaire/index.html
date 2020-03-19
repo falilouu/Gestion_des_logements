@@ -10,6 +10,11 @@
 	</div>
 	<div class="row menuR">
 		<div class="col-md-12 menu">
+			<a href="{{ url_for("index_gestionnaire") }}"><div class="row bordureMenu-active" style="font-weight: bold;">Reservations</div></a>
+		</div>
+	</div>
+	<div class="row menuR">
+		<div class="col-md-12 menu">
 			<div class="row">
 				<button class="bordureMenu-active" data-toggle="modal" data-target="#modalModif" style="font-weight: bold; width: 100%;">
 					<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
@@ -20,15 +25,60 @@
 	</div>
 {% endblock %}
 
-{% block titre_page %} 
-	<div class="col-md-4 col-md-offset-4 title-page">
-		<h2> Information du compte </h2>
-	</div> 
+{% block titre_page %}
+	<div class="col-md-12 title-page">
+		<h2> Reservations </h2>
+	</div>
 {% endblock %}
 
 {% block contenu_page %}
+	
+	<div class="col-md-12">
+		<table class="table table-bordered sunu-tableau">
+			<thead class="thead-light">
+			<tr>
+				<th scope="col">Numero reservation</th>
+				<th scope="col">Nom</th>
+				<th scope="col">Prenom</th>
+				<th scope="col">Date reservation</th>
+				<th scope="col">Pavillon</th>
+				<th scope="col">Numero chambre</th>
+				<th scope="col">Etat paiement</th>
+			</tr>
+			</thead>
+			<tbody>
 
-	{% include "modals/modif_cmpt_gest_modal.html" %}
+			{% for user in users %}
+			<tr>
+				<th scope="row">{{ user["id"] }}</th>
+				<td>{{ user["prenom"] }}</td>
+				<td>{{ user["nom"] }}</td>
+				<td>{{ user["username"] }}</td>
+				<td>{{ user["fonction"] }}</td>
+				<td>{{ user["Pavillon_nom_pavillon"] }}</td>
+				<td class="col-md-3">
+					<div class="row">
+						<div class="col-md-4 col-md-offset-2">
+							<button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalModifier{{ user["id"] }}">Modifier</button>
+						</div>
+						<div class="col-md-4">
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalSupprimer{{ user["id"] }}">Supprimer</button>
+						</div>
+					</div>
+				</td>
+			</tr>
+
+			{% include "modals/delete_modal.html" %}
+			{% include "modals/update_modal.html" %}
+
+			{% endfor %}
+
+			</tbody>
+		</table>
+		
+		{% include "modals/add_modal.html" %}
+		
+	</div>
 
 {% block bouton_ajouter %} {% endblock %}
 
