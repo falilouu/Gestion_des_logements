@@ -25,7 +25,15 @@
 				
 					{% block dec %}	
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#" style="font-weight : 600"><form action="{{ url_for("logout") }}"><button type="submit" class="btn btn-primary btn-decon">Déconnexion</button></form></a></li>
+						<li>
+							<a href="#" style="font-weight : 600">
+								<form action="{{ url_for("logout") }}">
+									<button type="submit" class="btn btn-primary btn-decon">
+										<span class="glyphicon glyphicon-log-out"></span> Déconnexion
+									</button>
+								</form>
+							</a>
+						</li>
 					</ul>
 					{% endblock %}
 				</div>

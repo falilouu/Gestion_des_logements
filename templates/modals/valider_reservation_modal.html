@@ -1,0 +1,22 @@
+<!-- Modal valider reservation -->
+
+<div class="modal fade" id="modalValider{{ reservation["id"] }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header header-modal">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Validation reservation</h4>
+        </div>
+        <div class="modal-body">
+            Voulez-vous vraiment valider cette reservation ?
+        </div>
+        <div class="modal-footer">
+            <form action="{{ url_for('validerReservation', reservation_id = reservation["id"]) }}" method="POST">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                <input class="btn btn-success" type="submit" value="Valider">
+            </form>
+        
+        </div>
+    </div>
+    </div>
+</div>

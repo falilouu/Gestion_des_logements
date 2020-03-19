@@ -89,7 +89,7 @@ def gestion_pavillon():
 @app.route('/page_gestionnaire')
 def index_gestionnaire():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT r.id, e.nom, e.prenom, r.date_reservation, r.pavillon_nom_pavillon, r.chambre_numero_chambre FROM reservation r, etudiant e WHERE e.id = r.Etudiant_id ")
+    cur.execute("SELECT r.id, r.etat_payement, e.nom, e.prenom, r.date_reservation, r.pavillon_nom_pavillon, r.chambre_numero_chambre FROM reservation r, etudiant e WHERE e.id = r.Etudiant_id ")
     reservations = cur.fetchall()
     cur.close()
     return render_template("pages_gestionnaire/index.html", reservations = reservations)
@@ -295,9 +295,9 @@ def login():
                 session['prenom'] = user['prenom']
 
                 if user['fonction'] == "Chef de pavillon":
-                    return render_template("pages_gestionnaire/index.html", user = user)
+                    return redirect(url_for('index_gestionnaire'))
                 else:
-                    return render_template("pages_comptable/index.html", user = user)
+                    return redirect(url_for('index_gestionnaire'))
 
         # Connexion administrateur
         cur.execute("SELECT * FROM administrateur WHERE login =%s or username=%s",(identifiant,identifiant,))
@@ -479,12 +479,27 @@ def ajoutReservation():
 
     if query == None:
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO reservation (date_reservation, Etudiant_id, Pavillon_nom_pavillon, Chambre_numero_chambre ) VALUES (NOW(), %s, %s, %s)", (etudiant_id, pavillon, numero_chambre))
+        cur.execute("INSERT INTO reservation (etat_payement, date_reservation, Etudiant_id, Pavillon_nom_pavillon, Chambre_numero_chambre ) VALUES ('Non payee', NOW(), %s, %s, %s)", (etudiant_id, pavillon, numero_chambre))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('index_etudiant'))
     else:
         return redirect(url_for('index_etudiant'))
+
+
+
+@app.route('/validation_reservation/<int:reservation_id>',methods = ['POST'])
+def validerReservation(reservation_id):
+    if request.method == "POST":
+        cur = mysql.connection.cursor()
+        cur.execute("""
+        UPDATE reservation
+        SET etat_payement = "Payer"
+        WHERE id = %s
+        """, (reservation_id,))
+        mysql.connection.commit()
+        #cur.close()
+        return redirect(url_for('index_gestionnaire'))
 
 
 if __name__ == '__main__':

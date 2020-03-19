@@ -25,20 +25,20 @@ def new_student():
     #Valider reservation
 @app.route('/',methods = ['POST', 'GET'])
 
-def ValiderReservation():
+def validerReservation(reservation_id):
 
     if request.method == "POST":
 
-        identifiant =  request.form['identifiant']
+        identifiant =  reservation_id
         cur = mysql.connection.cursor()
         cur.execute("""
         UPDATE reservation
-        SET etat_payement = "payer", Gestionnaire_id = identifiant
+        SET etat_payement = "Payer", Gestionnaire_id = identifiant
         WHERE Etudiant_id = %s
-        """)
+        """, (identifiant,))
         mysql.connection.commit()
         #cur.close()
-        return render_template('listReservation.html')
+        return redirect(url_for('index_gestionnaire'))
 
 
 #Liste reservation
