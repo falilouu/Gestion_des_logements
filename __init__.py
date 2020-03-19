@@ -502,5 +502,23 @@ def validerReservation(reservation_id):
         return redirect(url_for('index_gestionnaire'))
 
 
+@app.route('/connexion')
+def connexion():
+    return render_template('login/loginn.html')
+
+
+#Envoie de mail pour la réinitialisation de mot de passe
+@app.route('/reinitialiserMotDePasse', methods=["POST"])
+def reinitialisationMDP():
+    if request.method == "POST":
+        # table = request.form['table']
+        email = request.form['email']
+        msg = Message('Reservation 2020', recipients = request.form['email'])
+        msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+email+'/'
+        mail.send(msg)
+        
+        return 'Message envoyé'
+
+
 if __name__ == '__main__':
     app.run(debug = True)

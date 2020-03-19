@@ -1,0 +1,9 @@
+body 
+{
+  background-image: url("../../static/images/bg.jpg");
+}
+
+.card-gauche
+{
+  height: 100%;
+}

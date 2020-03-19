@@ -1,0 +1,31 @@
+<!-- Modal mot de passe oublie utilisateur -->
+<form class="form-inline" action="{{ url_for("reinitialisationMDP") }}" method="POST">
+
+    <div class="modal fade" id="modalOublie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header header-modal">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Mot de passe oublie</h4>
+                </div><br>
+                
+                <div class="row" style="padding-left: 5%;">
+                    <p>Indiquez l'adresse email associe a votre espace pour generer un nouveau mot de passe</p>
+
+                    <div class="col-lg-5">
+                        <label class="control-label">Adresse mail </label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                </div><br> 
+
+                <div class="modal-footer" >
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success">Valider</button>
+                </div>
+                    
+            </div>
+        </div>
+    </div>
+
+</form>
