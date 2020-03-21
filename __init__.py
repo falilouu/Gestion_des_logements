@@ -518,8 +518,16 @@ def mailReinitSuccess():
     return render_template('login/mailReinitSuccess.html')
 
 # Page de reinitialsation de mot de passe a proprement dit
-def mailReinitSuccess():
-    return render_template('login/mdpReinit.html')
+@app.route('/reinitialisation/<int:identifiant>/<string:table>')
+def mdpReninit(identifiant, table):
+    cur = mysql.connection.cursor()
+
+    if table == "etudiant":
+        cur.execute("SELECT * FROM etudiant WHERE id=%s", (identifiant,))
+        user = cur.fetchone()
+    
+    if user!=None:
+        return render_template('login/mdpReinit.html', user = user, table = table)
 
 
 
@@ -538,7 +546,9 @@ def reinitialisationMDP():
        
         if user!=None:
             table = "etudiant"
-            envoiMailReinit(user['id'], table, email)
+            identifiant = user['id']
+            envoiMailReinit(identifiant, table, email)
+            return redirect(url_for('mailReinitSuccess'))
 
         # Compte gestionnaire
         cur.execute("SELECT * FROM gestionnaire WHERE email =%s",(email,))
@@ -546,15 +556,18 @@ def reinitialisationMDP():
        
         if user!=None:
             table = "gestionnaire"
-            envoiMailReinit(user['id'], table, email)
+            identifiant = user['id']
+            envoiMailReinit(identifiant, table, email)
+            return redirect(url_for('mailReinitSuccess'))
+
+        return "Votre mail ne figure pas dans la base de donnnees !"
  
 
-
-def envoiMailReinit(id, table, email):
+# Fonction d'envoie mail
+def envoiMailReinit(identifiant, table, email):
     msg = Message('Reservation 2020', recipients = [email])
-    msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+email+'/'+table
-    mail.send(msg) 
-    return redirect(url_for('mailReinitSuccess'))
+    msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+str(identifiant)+'/'+table
+    mail.send(msg)
 
 
 

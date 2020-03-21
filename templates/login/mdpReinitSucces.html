@@ -1,0 +1,10 @@
+{% extends "login/mailReinitSuccess.html" %}
+
+{% block titre_cadre %} 
+    Information  
+{% endblock %}
+
+{% block contenu_cadre %} 
+    Le mot de passe de votre compte a ete reinitialise.
+    Vous pouvez vous connecter avec votre nouveau mot de passe <a href="{{ url_for('login') }}">ici</a>.
+{% endblock %}
