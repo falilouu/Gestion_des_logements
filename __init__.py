@@ -502,22 +502,60 @@ def validerReservation(reservation_id):
         return redirect(url_for('index_gestionnaire'))
 
 
+# Nouvelle page de connexion
 @app.route('/connexion')
 def connexion():
     return render_template('login/loginn.html')
 
 
-#Envoie de mail pour la réinitialisation de mot de passe
+# Pages de renseignement de mail de reinitialisation
+@app.route('/mailReinit')
+def mailReinit():
+    return render_template('login/mailReinit.html')
+
+@app.route('/mailReinitSuccess')
+def mailReinitSuccess():
+    return render_template('login/mailReinitSuccess.html')
+
+# Page de reinitialsation de mot de passe a proprement dit
+def mailReinitSuccess():
+    return render_template('login/mdpReinit.html')
+
+
+
+# Envoie de mail pour la réinitialisation de mot de passe
 @app.route('/reinitialiserMotDePasse', methods=["POST"])
-def reinitialisationMDP():
+def reinitialisationMDP(): 
     if request.method == "POST":
         # table = request.form['table']
         email = request.form['email']
-        msg = Message('Reservation 2020', recipients = request.form['email'])
-        msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+email+'/'
-        mail.send(msg)
-        
-        return 'Message envoyé'
+
+        cur = mysql.connection.cursor()
+
+        # Compte étudiant
+        cur.execute("SELECT * FROM etudiant WHERE email=%s",(email,))
+        user = cur.fetchone()
+       
+        if user!=None:
+            table = "etudiant"
+            envoiMailReinit(user['id'], table, email)
+
+        # Compte gestionnaire
+        cur.execute("SELECT * FROM gestionnaire WHERE email =%s",(email,))
+        user = cur.fetchone()
+       
+        if user!=None:
+            table = "gestionnaire"
+            envoiMailReinit(user['id'], table, email)
+ 
+
+
+def envoiMailReinit(id, table, email):
+    msg = Message('Reservation 2020', recipients = [email])
+    msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+email+'/'+table
+    mail.send(msg) 
+    return redirect(url_for('mailReinitSuccess'))
+
 
 
 if __name__ == '__main__':

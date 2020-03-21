@@ -1,0 +1,60 @@
+{% extends "layouts/squelette.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for("static", filename="css/css.css") }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for("static", filename="css/all.css") }}">
+{% endblock %}
+
+{% block titre %} Page etudiant {% endblock %}
+{% block titre_site %} Espace etudiant {% endblock %}
+
+{% block dec %} 
+  <ul class="nav navbar-nav navbar-right">
+    <li><a href="#" style="font-weight : 600"><form action= ><button type="submit" class="btn btn-primary btn-conn">Connexion</button></form></a></li>
+  </ul>
+{% endblock %}
+  
+{% block corps %} 
+
+<form name="add_form" method="POST" action="{{ url_for('reinitialisationMDP') }}">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2" style="padding: 22px;">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-default">
+                    <div class="panel-heading"><h2 style="text-align: center;">Reinitialiser votre mot de passe</h2></div>
+                        
+                        <div class="panel-body">
+                            <p>
+                                Vous pouvez maintenant definir un nouveau mot de passe:
+                            </p>
+
+                            <div class="form-group">
+                                <label for="inputPassword">Nouveau mot de passe</label>
+                                <input name="mdp" type="password" id="inputEmail" class="form-control" placeholder="Email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inputPassword">Repeter le mot de passe</label>
+                                <input name="cmdp" type="password" id="inputEmail" class="form-control" placeholder="Email" required>
+                            </div>
+                             
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Reninitialiser le mot de passe</button>
+                
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+</form> 
+
+
+
+{% endblock %}
+
+{% block footer %} {% endblock %}

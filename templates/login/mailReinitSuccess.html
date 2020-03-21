@@ -1,0 +1,48 @@
+{% extends "layouts/squelette.html" %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/style.css") }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for("static", filename="css/css.css") }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for("static", filename="css/all.css") }}">
+{% endblock %}
+
+{% block titre %} Page etudiant {% endblock %}
+{% block titre_site %} Espace etudiant {% endblock %}
+
+{% block dec %} 
+  <ul class="nav navbar-nav navbar-right">
+    <li><a href="#" style="font-weight : 600"><form action= ><button type="submit" class="btn btn-primary btn-conn">Connexion</button></form></a></li>
+  </ul>
+{% endblock %}
+  
+{% block corps %} 
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2" style="padding: 22px;">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div class="panel-default">
+                    <div class="panel-heading"><h2 style="text-align: center;">Reinitialisation de mot de passe</h2></div>
+                        <div class="panel-body">
+
+                            <div class="form-group">
+                                <div class="alert alert-success" role="alert">
+                                <span class="glyphicon glyphicon-ok-circle"></span> Un mail vous a ete envoye. Cliquez sur le <b>lien</b> un fois le message recu.
+                                </div>
+                            </div>
+            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block footer %} {% endblock %}
