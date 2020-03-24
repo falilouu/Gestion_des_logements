@@ -4,6 +4,8 @@ from flask_mysqldb import MySQL, MySQLdb
 
 from flask_mail import Mail , Message
 
+from datetime import datetime
+
 #pour le fichier
 import xlrd
 import MySQLdb
@@ -64,7 +66,7 @@ def lister_gestionnaires():
 @app.route('/page_admin/etudiant')
 def gestion_etudiant():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant")
+    cur.execute(""" SELECT id, prenom, nom, niveau, departement, email, nce, cni, date_de_naissance FROM etudiant WHERE etat = "Activer" """)
     rows = cur.fetchall()
     cur.close()
     return render_template('pages_admin/gestion_etudiants.html', users = rows)
@@ -94,6 +96,26 @@ def index_gestionnaire():
     cur.close()
     return render_template("pages_gestionnaire/index.html", reservations = reservations)
 
+# Page de modif infos gestionnaire
+@app.route('/updateGestionnaire/<int:identifiant>',methods = ['POST', 'GET'])
+
+def updateGestionnaire(identifiant):
+    if request.method == 'POST':
+        username = request.form['login']
+        mdp = request.form['Passe'].encode("utf-8")
+
+        cur = mysql.connection.cursor()
+
+        cur.execute("""
+        UPDATE gestionnaire
+        SET mdp = %s, username = %s
+        WHERE id = %s
+        """, (mdp, username, identifiant,))
+
+        mysql.connection.commit()
+        #cur.close()
+        return redirect(url_for('index_gestionnaire'))
+
 
 
 # Page pour les etudiants
@@ -105,9 +127,12 @@ def index_etudiant():
 
     cur.execute("SELECT * FROM pavillon")
     pavillons = cur.fetchall()
+
+    cur.execute("SELECT * FROM reservation WHERE Etudiant_id = %s", (session['identifiant'],))
+    reservation = cur.fetchone()
     cur.close()
 
-    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres, user = session['identifiant'])
+    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres, user = session['identifiant'], reservation = reservation)
 
 
 # Page de creation compte etudiant
@@ -291,6 +316,7 @@ def login():
         if user!=None:
             mdp = mdp.decode("utf-8")
             if mdp == user['mdp']:
+                session['id'] = user['id']
                 session['identifiant'] = user['username']
                 session['prenom'] = user['prenom']
 
@@ -310,7 +336,7 @@ def login():
             if p==user['mdp']:
                 session['identifiant'] = user['username']
                 session['prenom'] = user['prenom']
-                return render_template("pages_admin/index.html")
+                return redirect(url_for('lister_gestionnaires'))
         else:
             return "mot de passe incorrecte"
 
@@ -352,15 +378,14 @@ def logout():
     return redirect(url_for('login'))
 
 
-
-# Envoie mail 
-@app.route('/')
+# Envoie mail etudiant
 def envoiMailEtudiant():
-    database = MySQLdb.connect(host="localhost", user="", passwd="", db="")
+    database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
     cursor = database.cursor()
     cursor.execute("SELECT prenom, nom, email, id FROM etudiant")
     resultat = cursor.fetchall()
 
+    return 'ok'
     with mail.connect() as conn:
         for e in resultat:
             msg = Message('Reservation 2020', recipients=[e[2]])
@@ -380,11 +405,9 @@ def uploadFichierInsertion():
     book = xlrd.open_workbook(fichier.filename)
     sheet = book.sheet_by_name("Feuille1")
 
-    database = MySQLdb.connect(host="localhost", user="test", passwd="passer", db="gestion_logement")
+    cursor = mysql.connection.cursor()
 
-    cursor = database.cursor()
-
-    query = """INSERT INTO etudiant (nom, prenom, niveau, departement, email, telephone, nce, cni, date_de_naissance) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+    query = """INSERT INTO etudiant (nom, prenom, niveau, departement, email, telephone, nce, cni, date_de_naissance, etat) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s, "Activer")"""
 
     for r in range(1, sheet.nrows):
         nom = sheet.cell(r,0).value
@@ -397,13 +420,24 @@ def uploadFichierInsertion():
         CNI = sheet.cell(r,7).value
         date_de_naissance = sheet.cell(r,8).value
 
-        values = (nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance)
+        python_date = datetime(*xlrd.xldate_as_tuple(date_de_naissance, 0))
+
+        python_date = python_date.strftime("%d/%m/%Y")
+
+        values = (nom, prenom, niveau, departement, email, telephone, NCE, CNI, python_date)
 
         cursor.execute(query, values)
 
+        cursor.execute("SELECT id FROM etudiant WHERE email = %s", (email,))
+        resultat = cursor.fetchone()
+
+        msg = Message('Reservation 2020', recipients=[email])
+        msg.body = 'Salut'+' '+prenom+' '+nom+' Vous pouvez vous inscrire sur le lien suivant pour les besoins de logements du campus social '+'127.0.0.1:5000/etudiant/creationCompte/'+str(resultat['id'])
+        mail.send(msg)
+    
+
     cursor.close()
-    database.commit()
-    database.close()
+    mysql.connection.commit()
 
     return redirect(url_for('gestion_etudiant'))
 
@@ -433,7 +467,7 @@ def uploadFichierSuppression():
         CNI = sheet.cell(r,7).value
         date_de_naissance = sheet.cell(r,8).value
         
-        cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE nom = %s and prenom = %s and niveau = %s and departement = %s and email = %s and telephone = %s and NCE = %s and CNI = %s and date_de_naissance = %s """, (nom, prenom, niveau, departement, email, telephone, NCE, CNI, date_de_naissance))
+        cursor.execute("""UPDATE etudiant SET etat = "Desactiver" WHERE NCE = %s and CNI = %s""", (NCE, CNI))
 
        
     cursor.close()
@@ -487,14 +521,13 @@ def ajoutReservation():
         return redirect(url_for('index_etudiant'))
 
 
-
-@app.route('/validation_reservation/<int:reservation_id>',methods = ['POST'])
+@app.route('/validation_reservation/<int:reservation_id>', methods = ['POST'])
 def validerReservation(reservation_id):
     if request.method == "POST":
         cur = mysql.connection.cursor()
         cur.execute("""
         UPDATE reservation
-        SET etat_payement = "Payer"
+        SET etat_payement = "Payer", date_payement = NOW()
         WHERE id = %s
         """, (reservation_id,))
         mysql.connection.commit()
@@ -522,18 +555,30 @@ def mailReinitSuccess():
 def mdpReninit(identifiant, table):
     cur = mysql.connection.cursor()
 
-    if table == "etudiant":
-        cur.execute("SELECT * FROM etudiant WHERE id=%s", (identifiant,))
-        user = cur.fetchone()
+    cur.execute("SELECT * FROM " + table + " WHERE id='" + str(identifiant) + "'")
+    user = cur.fetchone()
     
-    if user!=None:
+    if user != None:
         return render_template('login/mdpReinit.html', user = user, table = table)
+
+# Enregistement du nouveau mdp (il faudra vérifier si le mdp et la confirmation du mdp concordent)
+@app.route('/reinitialisationEffective/<int:identifiant>/<string:table>', methods=["POST", "GET"])
+def mdpReinitEffective(identifiant,table):
+    cursor = mysql.connection.cursor()
+
+    mdp = request.form['mdp']
+
+    cursor.execute("UPDATE " + table +" SET mdp = '" + mdp +"' WHERE id = '" + str(identifiant) +"'")
+    mysql.connection.commit()
+    cursor.close()
+    
+    return render_template('login/mdpReinitSuccess.html')
 
 
 
 # Envoie de mail pour la réinitialisation de mot de passe
 @app.route('/reinitialiserMotDePasse', methods=["POST"])
-def reinitialisationMDP(): 
+def reinitialisationMdp(): 
     if request.method == "POST":
         # table = request.form['table']
         email = request.form['email']
@@ -544,7 +589,7 @@ def reinitialisationMDP():
         cur.execute("SELECT * FROM etudiant WHERE email=%s",(email,))
         user = cur.fetchone()
        
-        if user!=None:
+        if user != None:
             table = "etudiant"
             identifiant = user['id']
             envoiMailReinit(identifiant, table, email)
@@ -554,7 +599,7 @@ def reinitialisationMDP():
         cur.execute("SELECT * FROM gestionnaire WHERE email =%s",(email,))
         user = cur.fetchone()
        
-        if user!=None:
+        if user != None:
             table = "gestionnaire"
             identifiant = user['id']
             envoiMailReinit(identifiant, table, email)
@@ -572,4 +617,4 @@ def envoiMailReinit(identifiant, table, email):
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = True, port = 5000)

@@ -31,6 +31,8 @@
 	</div>
 {% endblock %}
 
+{% block nom_user %} {{ session['prenom'] }} {% endblock %}
+
 {% block contenu_page %}
 	
 	<div class="col-md-12">
@@ -93,6 +95,8 @@
 			</tr>
 
 			{% include "modals/valider_reservation_modal.html" %}
+			{% include "modals/modif_cmpt_gest_modal.html" %}
+
 			{% endfor %}
 
 			</tbody>

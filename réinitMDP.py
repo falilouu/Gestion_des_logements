@@ -55,10 +55,8 @@ def mailReinitialisationMDP():
     
 </script>
 
-#enregistement du nouveau mdp (il faudra vérifier si le mdp et la confirmation du mdp concordent)
+# Enregistement du nouveau mdp (il faudra vérifier si le mdp et la confirmation du mdp concordent)
 def reinitialisationMDP(identifiant,table):
-    database = MySQLdb.connect(host="localhost", user="", passwd="", db="")
-
     cursor = database.cursor()
 
     mdp = request.form['pwd']

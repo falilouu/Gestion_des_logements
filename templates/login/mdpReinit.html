@@ -18,36 +18,36 @@
   
 {% block corps %} 
 
-<form name="add_form" method="POST" action="{{ url_for('reinitialisationMDP') }}">
+<form name="add_form" method="POST" action="{{ url_for('mdpReinitEffective', identifiant = user['id'], table = table) }}">
   <div class="row">
     <div class="col-md-8 col-md-offset-2" style="padding: 22px;">
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default">
                     <div class="panel-default">
-                    <div class="panel-heading"><h2 style="text-align: center;">Reinitialiser votre mot de passe</h2></div>
+                        <div class="panel-heading">
+                            <h2 style="text-align: center;">Reinitialiser votre mot de passe
+                            </h2>
+                        </div>
                         
                         <div class="panel-body">
                             <p>
-                                Vous pouvez maintenant definir un nouveau mot de passe:
+                                Vous pouvez maintenant definir un nouveau mot de passe pour <b>{{ user['email'] }}</b>.
                             </p>
 
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    
-                                        <label for="inputPassword">Nouveau mot de passe</label>
-                                        <input name="mdp" type="password" id="inputEmail" class="form-control" placeholder="Mot de passe" required>
-                                    
+                                    <label for="inputPassword">Nouveau mot de passe</label>
+                                    <input name="mdp" type="password" id="inputEmail" class="form-control" placeholder="Nouveau mot de passe" required>
                                 </div>
                                 
                                 <div class="form-group">
-                                    
-                                    <label for="inputPassword">Repeter le mot de passe</label>
+                                    <label for="inputPassword">Confirmer le nouveau mot de passe</label>
                                     <input name="cmdp" type="password" id="inputEmail" class="form-control" placeholder="Nouveau mot de passe" required>
                                 </div>
                             </div>
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Reininitialiser le mot de passe</button>
-                
+
                         </div>
                     </div>
                 </div>

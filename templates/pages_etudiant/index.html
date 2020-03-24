@@ -1,5 +1,7 @@
 {% extends "layouts/squelette.html" %}
 
+{% block titre %} Page etudiant {% endblock %}
+
 {% block titre_site %} Espace etudiant {% endblock %}
 
 {% block titre_page %} 
@@ -29,51 +31,71 @@
 
 {% block bouton_ajouter %} {% endblock%}
 
+{% block nom_user %} {{ session['prenom'] }} {% endblock %}
+
 {% block contenu_page %}
-	<div class="col-md-7">
-		<form action="{{ url_for("ajoutReservation") }}" method="POST" class="form-reservation">	
-			<div class="row" style="padding-left: 10%;">
-				<div style=" margin-top: 30px;"></div>
+	{% if reservation == None %}
+		<div class="col-md-7">
+			<form action="{{ url_for("ajoutReservation") }}" method="POST" class="form-reservation">	
+				<div class="row" style="padding-left: 10%;">
+					<div style=" margin-top: 30px;"></div>
 
-				<div class="col-lg-3" >
-					<label class="control-label" for="pav">Pavillon: </label><br>
+					<div class="col-lg-3" >
+						<label class="control-label" for="pav">Pavillon: </label><br>
 
-						<select onchange="remplirChambre(this.value)" type="text" name="pavillon" id="pav"  class="form-control" required  style="background-color:rgb(252,252,252);">
+							<select onchange="remplirChambre(this.value)" type="text" name="pavillon" id="pav"  class="form-control" required  style="background-color:rgb(252,252,252);">
 
-							{% for pavillon in pavillons %}
-								<option value="{{ pavillon['nom_pavillon'] }}">{{ pavillon['nom_pavillon'] }}</option>
-							{% endfor %}
-								
+								{% for pavillon in pavillons %}
+									<option value="{{ pavillon['nom_pavillon'] }}">{{ pavillon['nom_pavillon'] }}</option>
+								{% endfor %}
+									
 
-						</select >
-				</div>
+							</select >
+					</div>
 
-				<div class="col-lg-4" >
+					<div class="col-lg-4" >
 
-					<label class="control-label" for="pav">Numero de chambre: </label><br>
+						<label class="control-label" for="pav">Numero de chambre: </label><br>
 
-						<select onchange="remplirPlaces(this.value)" type="text" name="numero_chambre" id="numero_chambre" class="form-control" required  style="background-color:rgb(252,252,252);">
+							<select onchange="remplirPlaces(this.value)" type="text" name="numero_chambre" id="numero_chambre" class="form-control" required  style="background-color:rgb(252,252,252);">
 
-							<!-- <option value="pavillon-A">Pavillon-A</option> -->
+								<!-- <option value="pavillon-A">Pavillon-A</option> -->
 
-						</select >
-				</div>
+							</select >
+					</div>
 
-				<div class="col-lg-4" id="nombre_places_dispo" style="margin-top: 32px; padding-left: 0px;">
-					*Places restantes ici !*
+					<div class="col-lg-4" id="nombre_places_dispo" style="margin-top: 32px; padding-left: 0px;">
+						*Places restantes ici !*
+					</div><br>
+
 				</div><br>
 
-			</div><br>
+				<div class="row">
+					<div class="col-lg-2 col-md-offset-10">
+						<input type="submit" name="nombre_places" value="Valider" class="btn btn-success" class="form-control" required >
+					</div>
+				</div><br>
 
-			<div class="row">
-				<div class="col-lg-2 col-md-offset-10">
-					<input type="submit" name="nombre_places" value="Valider" class="btn btn-success" class="form-control" required >
-				</div>
-			</div><br>
+				
+			</form>
+		</div>
+	{% else %}
+		{% if reservation['etat_payement'] == "Non payee" %}	
+			<div class="col-md-12" style="margin-top: 35px;">
+				<div class="alert alert-success" role="alert"></span><h3 style="text-align: center;"><span class="glyphicon glyphicon-ok"></span> Vous avez deja effectue votre reservation !</h3> </div>
+			</div>
 
-			
-		</form>
-	</div>
+			<div class="col-md-12">
+				<div class="alert alert-warning" role="alert"></span><h3 style="text-align: center;"><span class="glyphicon glyphicon-info-sign"></span> En attente de la validation de votre reservation</h3> </div>
+			</div>
+		{% else %}
+			<div class="col-md-12" style="margin-top: 35px;">
+				<div class="alert alert-success" role="alert"></span><h3 style="text-align: center;"><span class="glyphicon glyphicon-ok-circle"></span> Votre réservation a été effectuée avec succès !</h3> </div>
+			</div>
+		{% endif %}
+
+	{% endif %} 
+
 {% endblock %}
 
 {% block script %}
