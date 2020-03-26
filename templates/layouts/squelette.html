@@ -51,7 +51,7 @@
 						<div class="roundedImage">
 							<img src="{{url_for("static", filename="images/icon.png")}}">
 						</div>
-						<p class="nom-admin">{% block nom_user %} Falilou - Admin {% endblock %}</p>
+						<p class="nom-admin">{% block nom_user %} {{ session['prenom_admin']}} - Admin {% endblock %}</p>
 					</div>
 				</div>
 				{% block menu %}

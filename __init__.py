@@ -76,7 +76,7 @@ def gestion_etudiant():
 # Page admin pavillon
 @app.route('/page_admin/pavillon')
 def gestion_pavillon():
-    if 'identifiant' in session:
+    if 'identifiant_admin' in session:
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM chambre")
         rows = cur.fetchall()
@@ -128,11 +128,11 @@ def index_etudiant():
     cur.execute("SELECT * FROM pavillon")
     pavillons = cur.fetchall()
 
-    cur.execute("SELECT * FROM reservation WHERE Etudiant_id = %s", (session['identifiant'],))
+    cur.execute("SELECT * FROM reservation WHERE Etudiant_id = %s", (session['identifiant_etu'],))
     reservation = cur.fetchone()
     cur.close()
 
-    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres, user = session['identifiant'], reservation = reservation)
+    return render_template("pages_etudiant/index.html", pavillons = pavillons, chambres = chambres, user = session['identifiant_etu'], reservation = reservation)
 
 
 # Page de creation compte etudiant
@@ -177,17 +177,17 @@ def registerEtudiant(identifiant):
         curs = mysql.connection.cursor()
         details = request.form
         login = details['username']
-        mdp = details['mdp'].encode("utf-8")
+        mdp = details['mdp']
         identifiant = user['id']
-        pw_hash =hashlib.sha256(mdp).hexdigest()
+        # pw_hash =hashlib.sha256(mdp).hexdigest()
         cure = mysql.connection.cursor()
         cure.execute("SELECT * FROM etudiant e,gestionnaire g,administrateur a WHERE a.login=%s  or a.username=%s  or e.email=%s  or e.login=%s or g.email=%s  or g.username=%s   ",(login,login,login,login,login,login,))
         usere=cure.fetchone()
         cure.close()
 
         if usere==None:
-            pw_hash =hashlib.sha256(mdp).hexdigest()
-            curs.execute("UPDATE etudiant SET  mdp=%s,login=%s WHERE id = %s",(pw_hash,login,identifiant,))
+            # pw_hash =hashlib.sha256(mdp).hexdigest()
+            curs.execute("UPDATE etudiant SET  mdp=%s,login=%s WHERE id = %s",(mdp,login,identifiant,))
             #users=curs.fetchone()
             #curs.close()
             mysql.connection.commit()
@@ -299,12 +299,13 @@ def login():
         cur.execute("SELECT * FROM etudiant WHERE (login =%s or email=%s) and etat=%s",(identifiant,identifiant,"Activer",))
         user=cur.fetchone()
        
-        p=hashlib.sha256(mdp).hexdigest()
+        # p=hashlib.sha256(mdp).hexdigest()
        
         if user!=None:
-            if p == user['mdp']:
-                session['identifiant'] = user['id']
-                session['prenom'] = user['prenom']
+            mdp = mdp.decode("utf-8")
+            if mdp == user['mdp']:
+                session['identifiant_etu'] = user['id']
+                session['prenom_etu'] = user['prenom']
                 return redirect(url_for("index_etudiant"))
 
         # Connexion gestionnaire
@@ -316,9 +317,9 @@ def login():
         if user!=None:
             mdp = mdp.decode("utf-8")
             if mdp == user['mdp']:
-                session['id'] = user['id']
-                session['identifiant'] = user['username']
-                session['prenom'] = user['prenom']
+                session['id_gest'] = user['id']
+                session['identifiant_gest'] = user['username']
+                session['prenom_gest'] = user['prenom']
 
                 if user['fonction'] == "Chef de pavillon":
                     return redirect(url_for('index_gestionnaire'))
@@ -334,8 +335,8 @@ def login():
         
         if user != None:
             if p==user['mdp']:
-                session['identifiant'] = user['username']
-                session['prenom'] = user['prenom']
+                session['identifiant_admin'] = user['username']
+                session['prenom_admin'] = user['prenom']
                 return redirect(url_for('lister_gestionnaires'))
         else:
             return "mot de passe incorrecte"
@@ -503,7 +504,7 @@ def ajoutPavillon():
 def ajoutReservation():
     pavillon = request.form['pavillon']
     numero_chambre = request.form['numero_chambre']
-    etudiant_id = session['identifiant']
+    etudiant_id = session['identifiant_etu']
 
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM reservation WHERE Etudiant_id = %s AND Pavillon_nom_pavillon = %s AND Chambre_numero_chambre = %s", (etudiant_id, pavillon, numero_chambre))
@@ -610,7 +611,7 @@ def reinitialisationMdp():
 
 # Fonction d'envoie mail
 def envoiMailReinit(identifiant, table, email):
-    msg = Message('Reservation 2020', recipients = [email])
+    msg = Message('Resinitialisation mot de passe', recipients = [email])
     msg.body = 'Salut vous pouvez changer votre mot de passe sur le lien suivant '+'127.0.0.1:5000/reinitialisation/'+str(identifiant)+'/'+table
     mail.send(msg)
 

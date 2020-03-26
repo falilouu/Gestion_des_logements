@@ -1,5 +1,7 @@
 {% extends "layouts/squelette.html" %}
 
+{% block titre %} Page gestionnaire {% endblock %}
+
 {% block titre_site %} Espace comptable {% endblock %}
 
 {% block menu %}
@@ -31,7 +33,7 @@
 	</div>
 {% endblock %}
 
-{% block nom_user %} {{ session['prenom'] }} {% endblock %}
+{% block nom_user %} {{ session['prenom_gest'] }} {% endblock %}
 
 {% block contenu_page %}
 	

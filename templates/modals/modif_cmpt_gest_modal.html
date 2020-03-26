@@ -1,6 +1,6 @@
 <!-- Modal moidifier compte gestionnaire -->
 <script rel="stylesheet" src="{{ url_for("static", filename="js/fiche1.js") }}"></script> 
-<form action="{{ url_for('updateGestionnaire', identifiant = session['id'] )}}" method="POST">
+<form action="{{ url_for('updateGestionnaire', identifiant = session['id_gest'] )}}" method="POST">
     <div class="modal fade" id="modalModif" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
